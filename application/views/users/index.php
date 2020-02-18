@@ -119,7 +119,7 @@
         <i class="fa fa-table"></i> <?php echo $page_title  ?>
       </div>
       <div class="col-md-2">
-        <a href="<?php echo base_url('stores/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#modal"> Add <?php echo $page_title; ?></a>
+        <a href="<?php echo base_url('users/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#modal"> Add <?php echo $page_title; ?></a>
       </div>
     </div>
   </div>
@@ -152,7 +152,7 @@
 
                   <td>
                     <?php if (in_array('updateUser', $user_permission)) : ?>
-                      <button href="<?php echo base_url('users/edit/' . $v['user_info']['id']) ?>" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Edit" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-eye"></i></button>
+                    <button onclick="window.location.href = '<?php echo base_url('users/edit/' . $v['user_info']['id']) ?>'" tooltip-toggle="tooltip" data-placement="top" title="Edit" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-eye"></i></button>
                     <?php endif; ?>
                     <?php if (in_array('deleteUser', $user_permission)) : ?>
                       <button href="<?php echo base_url('users/delete/' . $v['user_info']['id']) ?>" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>

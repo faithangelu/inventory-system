@@ -381,6 +381,7 @@ function removeFunc(id)
         <i class="fa fa-table"></i> <?php echo $page_title  ?>
       </div>
       <div class="col-md-2">
+        <a href="<?php echo base_url('stores/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#file_upload"> Add <?php echo $page_title; ?></a>
         <a href="<?php echo base_url('stores/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#modal"> Add <?php echo $page_title; ?></a>
       </div>
     </div>
@@ -424,4 +425,29 @@ function removeFunc(id)
   </div>
 
   <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+</div>
+
+
+<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php echo form_open(site_url('tenants/tenant_info/upload'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
+				<div class="fallback">
+					<input name="file" type="file" class="hide" />
+				</div>
+				<?php echo form_close(); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
