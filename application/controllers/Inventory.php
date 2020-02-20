@@ -41,7 +41,7 @@ class Inventory extends Admin_Controller
 
         $this->data['store_data'] = $result;        
         $this->data['page_title'] = 'Store Inventory';
-        $this->data['page_breadcrumb'] = 'Inventory';
+        
 		$this->render_template('inventory/index', $this->data);		
 	}
 
@@ -251,6 +251,69 @@ class Inventory extends Admin_Controller
 
             $this->render_template('orders/edit', $this->data);
         }
+	}
+
+	/*
+	* If the validation is not valid, then it redirects to the edit orders page 
+	* If the validation is successfully then it updates the data into the database 
+	* and it stores the operation message into the session flashdata and display on the manage group page
+	*/
+	public function start_inventory($id)
+	{
+		if(!in_array('updateOrder', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+		if(!$id) {
+			redirect('dashboard', 'refresh');
+		}
+
+		$getStoreBranch = $this->model_stores->getActiveStore($id);
+
+		$this->data['page_title'] = 'Start Inventory Count';
+		$this->data['store_branch'] = $getStoreBranch;
+
+		// print_r($this->data['page_title']); 
+
+		// $this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
+		
+	
+      //   if ($this->form_validation->run() == TRUE) {        	
+        	
+      //   	$update = $this->model_orders->update($id);
+        	
+      //   	if($update == true) {
+      //   		$this->session->set_flashdata('success', 'Successfully updated');
+      //   		redirect('orders/update/'.$id, 'refresh');
+      //   	}
+      //   	else {
+      //   		$this->session->set_flashdata('errors', 'Error occurred!!');
+      //   		redirect('orders/update/'.$id, 'refresh');
+      //   	}
+      //   }
+      //   else {
+      //       // false case
+      //   	$company = $this->model_company->getCompanyData(1);
+      //   	$this->data['company_data'] = $company;
+      //   	$this->data['is_vat_enabled'] = ($company['vat_charge_value'] > 0) ? true : false;
+      //   	$this->data['is_service_enabled'] = ($company['service_charge_value'] > 0) ? true : false;
+
+      //   	$result = array();
+      //   	$orders_data = $this->model_orders->getOrdersData($id);
+
+    		// $result['order'] = $orders_data;
+    		// $orders_item = $this->model_orders->getOrdersItemData($orders_data['id']);
+
+    		// foreach($orders_item as $k => $v) {
+    		// 	$result['order_item'][] = $v;
+    		// }
+
+    		// $this->data['order_data'] = $result;
+
+      //   	$this->data['products'] = $this->model_products->getActiveProductData();      	
+
+      //   }
+            $this->render_template('inventory/create', $this->data);
 	}
 
 	/*

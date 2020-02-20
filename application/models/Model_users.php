@@ -83,5 +83,12 @@ class Model_users extends CI_Model
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
+
+	public function fetchUsers() 
+	{
+		$sql = "SELECT * FROM users WHERE status = ?";
+		$query = $this->db->query($sql, array(1));
+		return $query->result_array();
+	}
 	
 }

@@ -13,6 +13,7 @@ class Users extends Admin_Controller
 
 		$this->load->model('model_users');
 		$this->load->model('model_groups');
+		$this->load->model('model_stores');
 	}
 
 	
@@ -29,14 +30,20 @@ class Users extends Admin_Controller
 
 			$result[$k]['user_info'] = $v;
 
-			$group = $this->model_users->getUserGroup($v['id']);
-			$result[$k]['user_group'] = $group;
+			$user_group = $this->model_users->getUserGroup($v['id']);
+			$result[$k]['user_group'] = $user_group;
 		}
-
+		
 		$this->data['user_data'] = $result;
+		$this->data['user_group'] = $this->model_groups->getGroupData();
+		$this->data['user_stores'] = $this->model_stores->getStoresData();
 		$this->data['page_breadcrumb'] = 'Users';
 		
-		$this->render_template('users/index', $this->data);
+		if ($this->is_mobile()) {
+			$this->render_template('users/create', $this->data);
+		} else {			
+			$this->render_template('users/index', $this->data);
+		}
 	}
 
 	public function create()
@@ -44,6 +51,20 @@ class Users extends Admin_Controller
 		if(!in_array('createUser', $this->permission)) {
 			redirect('dashboard', 'refresh');
 		}
+
+		// $store_data = 
+
+		$result = array();
+		foreach ($store_data as $k => $v) {
+ 
+			$result[$k]['store_data'] = $v;
+
+			$group = $this->model_users->getUserGroup($v['id']);
+			$result[$k]['user_group'] = $group;
+		}
+
+	
+
 
 		$this->form_validation->set_rules('groups', 'Group', 'required');
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|is_unique[users.username]');
@@ -80,6 +101,7 @@ class Users extends Admin_Controller
         	$group_data = $this->model_groups->getGroupData();
         	$this->data['group_data'] = $group_data;
 			
+			// $this->load->view('modal');
             $this->render_template('users/create', $this->data);
         }	
 
@@ -326,6 +348,42 @@ class Users extends Admin_Controller
 				$this->render_template('users/setting', $this->data);	
 	        }	
 		}
+	}
+
+	public function fetchUsers() 
+	{
+		$result = array('data' => array());
+
+		$data = $this->model_users->fetchUsers();
+
+		foreach ($data as $key => $value) {
+			// var_dump($data);
+			// button
+			$buttons = '';
+
+			if(in_array('updateStore', $this->permission)) {
+				$buttons = '<button type="button" class="btn btn-default btn-sm" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button>';
+			}
+
+			if(in_array('deleteStore', $this->permission)) {
+				$buttons .= ' <button type="button" class="btn btn-warning btn-sm" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+			}
+
+			$status = ($value['status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+
+			$result['data'][$key] = array(
+				$value['id'],
+				$value['username'],
+				$value['email'],
+				$value['firstname'] . $value['lastname'],
+				$value['phone'],
+				$status,
+				$buttons
+			);
+
+		} // /foreach
+
+		echo json_encode($result);
 	}
 
 

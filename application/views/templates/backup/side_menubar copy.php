@@ -110,7 +110,7 @@
           <?php if(in_array('createOrder', $user_permission) || in_array('updateOrder', $user_permission) || in_array('viewOrder', $user_permission) || in_array('deleteOrder', $user_permission)): ?>
             <li class="treeview" id="mainOrdersNav">
               <a href="#">
-                <i class="fa fa-check-square""></i>
+                <i class="fa fa-check-square"></i>
                 <span>Inventory</span>
                 <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>

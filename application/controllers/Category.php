@@ -60,15 +60,15 @@ class Category extends Admin_Controller
 			$buttons = '';
 
 			if(in_array('updateCategory', $this->permission)) {
-				$buttons .= '<button type="button" class="btn btn-default" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button>';
+				$buttons .= '<button type="button" class="btn btn-warning" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button>';
 			}
 
 			if(in_array('deleteCategory', $this->permission)) {
-				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-danger" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
 			}
 				
 
-			$status = ($value['active'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+			$status = ($value['active'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
 			$result['data'][$key] = array(
 				$value['name'],
@@ -206,5 +206,55 @@ class Category extends Admin_Controller
 
 		echo json_encode($response);
 	}
+
+	 public function file_import()
+    {
+        $file = $_FILES['file'];
+
+        print_r($file);
+
+        $fields = array(
+            'id', 'name', 'active'
+        );      
+
+        if ($content = file_get_contents($file['tmp_name']))
+        {           
+            $content = $file['tmp_name'];
+            $csv = array_map('str_getcsv', file($content));
+
+            if (count($csv) > 1)
+            {
+                unset($csv[0]);
+
+                $chunk = array_chunk($csv, 1000, true);
+                foreach ($chunk as $key => $batch)
+                {
+                    $batch_data = FALSE;
+                    
+                                                    
+                    foreach ($batch as $k => $record)
+                    {           
+                        foreach ($record as $i => $cleanrecord)
+                        {                       
+                            $batch_data[$k][$fields[$i]] = utf8_encode($cleanrecord);                   
+                        }
+                    }
+
+
+                    if (! ($status = $this->model_products->insert_batch($batch_data))) {
+                        echo json_encode(array('success' => false, 'message' => 'Error occured. Unable to import the data. Please try again.')); exit;
+
+                    } else {
+                        echo json_encode(array('success' => true, 'message' => 'Data has been successfully imported.')); exit;
+
+                    }   
+                }                                   
+            }
+            
+        }           
+    }
+
+    // public function getCategory()
+
 
 }

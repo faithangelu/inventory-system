@@ -15,13 +15,54 @@
         
         <?php if ($user_permission) : ?>     
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
+            <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMerchandise" data-parent="#exampleAccordion">
+              <i class="fa fa-fw fa-suitcase"></i>
+              <span class="nav-link-text">Trades</span>
+            </a>
+            <ul class="sidenav-second-level collapse" id="collapseMerchandise">
+              <?php if(in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
+                <li id="storeNav">
+                  <a href="<?php echo base_url('stores') ?>">
+                    <i class="fa fa-shopping-cart"></i> | <span>Stores</span>
+                  </a>
+                </li>
+              <?php endif; ?>
+
+              <?php if(in_array('createProduct', $user_permission) || in_array('updateProduct', $user_permission) || in_array('viewProduct', $user_permission) || in_array('deleteProduct', $user_permission)): ?>
+                <li>
+                  <a href="<?php echo base_url('products') ?>">
+                    <i class="fa fa-product-hunt"></i> | <span>Products</span>
+                  </a>
+                </li>   
+              <?php endif; ?>
+              
+              <?php if(in_array('createBrand', $user_permission) || in_array('updateBrand', $user_permission) || in_array('viewBrand', $user_permission) || in_array('deleteBrand', $user_permission)): ?>
+                <li>
+                  <a href="<?php echo base_url('brands') ?>">
+                  <i class="fa fa-barcode"></i> | <span>Brands</span></a>
+                </li>      
+              <?php endif; ?> 
+
+              <?php if(in_array('createCategory', $user_permission) || in_array('updateCategory', $user_permission) || in_array('viewCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
+                <li >
+                  <a href="<?php echo base_url('category/') ?>">
+                    <i class="fa fa-bookmark"></i> | <span>Category</span>
+                  </a>
+                </li>
+              <?php endif; ?>     
+            </ul>
+          </li>
+
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
             <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseInventory" data-parent="#exampleAccordion">
               <i class="fa fa-fw fa-cubes"></i>
               <span class="nav-link-text">Inventory</span>
             </a>
             <ul class="sidenav-second-level collapse" id="collapseInventory">
               <li>
-                <a href="<?php echo base_url('inventory') ?>">Store Inventory Count</a>
+                <a href="<?php echo base_url('inventory') ?>"> 
+                   <i class="fa fa-copy"></i> | <span>Inventory Count</span>
+                </a>
               </li>            
             </ul>
           </li>
@@ -47,9 +88,11 @@
                 <li>
                   <a href="<?php echo base_url('users') ?>">Users</a>
                 </li>
+                <?php if(in_array('createGroup', $user_permission) || in_array('updateGroup', $user_permission) || in_array('viewGroup', $user_permission) || in_array('deleteGroup', $user_permission)): ?>
                 <li>
                   <a href="<?php echo base_url('groups') ?>">Roles</a>
                 </li>
+                <?php endif; ?>
               </ul>
             </li>
           <?php endif; ?>
@@ -84,10 +127,10 @@
         </form>      
         <?php if (in_array('viewProfile', $user_permission)) : ?>  
           <li class="nav-item">          
-          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-user"></i>Hi, User</a>
+          <a class="nav-link" href="<?php echo base_url('users/profile')?>">
+            <i class="fa fa-fw fa-user"></i>Profile</a>
           </li>
-          <?php endif; ?>  
+        <?php endif; ?>  
 
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">

@@ -20,8 +20,7 @@ class Model_orders extends CI_Model
 		return $query->result_array();
 	}*/
 	public function getProductData() {
-        return $this->db->get($this->table)
-                        ->result();
+        return $this->db->get($this->table)->result();
     }
 	/* get the orders data */
 	public function getOrdersData($id = null)

@@ -7,6 +7,14 @@ class Model_products extends CI_Model
 		parent::__construct();
 	}
 
+	/* get the all brand */
+	public function getProduct()
+	{
+		$sql = "SELECT * FROM products ORDER BY id DESC";
+		$query = $this->db->query($sql);
+		return $query->result_array();
+	}
+
 	/* get the brand data */
 	public function getProductData($id)
 	{
@@ -61,4 +69,11 @@ class Model_products extends CI_Model
 		return $query->num_rows();
 	}
 
+	public function insert_batch($data)
+	{
+		if($data) {
+			$insert = $this->db->insert_batch('products', $data);
+			return ($insert == true) ? true : false;
+		}
+	}
 }

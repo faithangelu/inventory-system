@@ -1,185 +1,359 @@
 
-
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      Manage
-      <small>Products</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Products</li>
-    </ol>
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-    <!-- Small boxes (Stat box) -->
+<!-- Example DataTables Card-->
+<div class="card mb-3">
+  <div class="card-header">
     <div class="row">
-      <div class="col-md-12 col-xs-12">
-
-        <div id="messages"></div>
-
-        <?php if($this->session->flashdata('success')): ?>
-          <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('success'); ?>
-          </div>
-        <?php elseif($this->session->flashdata('error')): ?>
-          <div class="alert alert-error alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-        <?php endif; ?>
-
-
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">Add Product</h3>
-          </div>
-          <!-- /.box-header -->
-          <form role="form" action="<?php base_url('users/create') ?>" method="post" enctype="multipart/form-data">
-              <div class="box-body">
-
-                <?php echo validation_errors(); ?>
-
-                <div class="form-group">
-
-                  <label for="product_image">Image</label>
-                  <div class="kv-avatar">
-                      <div class="file-loading">
-                          <input id="product_image" name="product_image" type="file">
-                      </div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="product_name">Product name</label>
-                  <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Enter product name" autocomplete="off"/>
-                </div>
-
-                <div class="form-group">
-                  <label for="sku">SKU</label>
-                  <input type="text" class="form-control" id="sku" name="sku" placeholder="Enter sku" autocomplete="off" />
-                </div>
-
-                <div class="form-group">
-                  <label for="price">Price</label>
-                  <input type="text" class="form-control" id="price" name="price" placeholder="Enter price" autocomplete="off" />
-                </div>
-
-                <div class="form-group">
-                  <label for="qty">Qty</label>
-                  <input type="text" class="form-control" id="qty" name="qty" placeholder="Enter Qty" autocomplete="off" />
-                </div>
-
-                <!--<div class="form-group">
-                  <label for="description">Description</label>
-                  <textarea type="text" class="form-control" id="description" name="description" placeholder="Enter 
-                  description" autocomplete="off">
-                  </textarea>
-                </div>-->
-
-                <?php if($attributes): ?>
-                  <?php foreach ($attributes as $k => $v): ?>
-                    <div class="form-group">
-                      <label for="groups"><?php echo $v['attribute_data']['name'] ?></label>
-                      <select class="form-control select_group" id="attributes_value_id" name="attributes_value_id[]" multiple="multiple">
-                        <?php foreach ($v['attribute_value'] as $k2 => $v2): ?>
-                          <option value="<?php echo $v2['id'] ?>"><?php echo $v2['value'] ?></option>
-                        <?php endforeach ?>
-                      </select>
-                    </div>    
-                  <?php endforeach ?>
-                <?php endif; ?>
-
-                <div class="form-group">
-                  <label for="brands">Brands</label>
-                  <select class="form-control select_group" id="brands" name="brands[]" multiple="multiple">
-                    <?php foreach ($brands as $k => $v): ?>
-                      <option value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>
-                    <?php endforeach ?>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="category">Category</label>
-                  <select class="form-control select_group" id="category" name="category[]" multiple="multiple">
-                    <?php foreach ($category as $k => $v): ?>
-                      <option value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>
-                    <?php endforeach ?>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="store">Store</label>
-                  <select class="form-control select_group" id="store" name="store">
-                    <?php foreach ($stores as $k => $v): ?>
-                      <option value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>
-                    <?php endforeach ?>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="store">Availability</label>
-                  <select class="form-control" id="availability" name="availability">
-                    <option value="1">Yes</option>
-                    <option value="2">No</option>
-                  </select>
-                </div>
-
-              </div>
-              <!-- /.box-body -->
-
-              <div class="box-footer">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="<?php echo base_url('products/') ?>" class="btn btn-warning">Back</a>
-              </div>
-            </form>
-          <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+      <div class="col-md-8">
+        All <?php echo $page_title  ?>
       </div>
-      <!-- col-md-12 -->
+      <div class="col-md-4 float-right d-flex justify-content-end">
+        <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
+        <a href="<?php echo base_url('stores/start_inventory') ?>" class="btn-sm btn btn-primary " data-toggle="modal" data-target="#addModal"> Add <?php echo $page_title; ?></a> 
+      </div>
     </div>
-    <!-- /.row -->
-    
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Store Name</th>
+            <th>Action</th>                        
+          </tr>
+        </thead>
+        <tbody>
+       
+        </tbody>
+      </table>
+    </div> 
+  </div>
 
-  </section>
-  <!-- /.content -->
+  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
 </div>
-<!-- /.content-wrapper -->
 
+
+<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php echo form_open(site_url('stores/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
+        <div class="fallback">
+          <input name="file" type="file" class="hide" />
+        </div>
+        <?php echo form_close(); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php if(in_array('createStore', $user_permission)): ?>
+<!-- create brand modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="addModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add Store</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      <form role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
+
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label for="brand_name">Store Name</label>
+            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Enter store name" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="active">Status</label>
+            <select class="form-control" id="active" name="active">
+              <option value="1">Active</option>
+              <option value="2">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+
+      </form>
+
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<?php endif; ?>
+
+<?php if(in_array('updateStore', $user_permission)): ?>
+<!-- edit brand modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="editModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Store</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      <form role="form" action="<?php echo base_url('stores/update') ?>" method="post" id="updateForm">
+
+        <div class="modal-body">
+          <div id="messages"></div>
+
+          <div class="form-group">
+            <label for="edit_brand_name">Store Name</label>
+            <input type="text" class="form-control" id="edit_store_name" name="edit_store_name" placeholder="Enter store name" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="edit_active">Status</label>
+            <select class="form-control" id="edit_active" name="edit_active">
+              <option value="0">Inactive</option>
+              <option value="1">Active</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+
+      </form>
+
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<?php endif; ?>
+
+<?php if(in_array('deleteStore', $user_permission)): ?>
+<!-- remove brand modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Remove Store</h4>
+      </div>
+
+      <form role="form" action="<?php echo base_url('stores/remove') ?>" method="post" id="removeForm">
+        <div class="modal-body">
+          <p>Do you really want to remove?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<?php endif; ?>
+
+
+
+<script type="text/javascript"> var app_url = '<?php echo base_url() ?>';  </script>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $(".select_group").select2();
-    $("#description").wysihtml5();
+var manageTable;
 
-    $("#mainProductNav").addClass('active');
-    $("#addProductNav").addClass('active');
-    
-    var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' + 
-        'onclick="alert(\'Call your custom code here.\')">' +
-        '<i class="glyphicon glyphicon-tag"></i>' +
-        '</button>'; 
-    $("#product_image").fileinput({
-        overwriteInitial: true,
-        maxFileSize: 1500,
-        showClose: false,
-        showCaption: false,
-        browseLabel: '',
-        removeLabel: '',
-        browseIcon: '<i class="glyphicon glyphicon-folder-open"></i>',
-        removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
-        removeTitle: 'Cancel or reset changes',
-        elErrorContainer: '#kv-avatar-errors-1',
-        msgErrorClass: 'alert alert-block alert-danger',
-        // defaultPreviewContent: '<img src="/uploads/default_avatar_male.jpg" alt="Your Avatar">',
-        layoutTemplates: {main2: '{preview} ' +  btnCust + ' {remove} {browse}'},
-        allowedFileExtensions: ["jpg", "png", "gif"]
-    });
+$(document).ready(function() {
 
+  // $("#storeNav").addClass('active');
+
+  // initialize the datatable 
+  manageTable = $('#manageTable').DataTable({
+    'ajax': app_url + 'stores/fetchStoresData',
+    'order': []
   });
+
+  // submit the create from 
+  $("#createForm").unbind('submit').on('submit', function() {
+    var form = $(this);
+
+    // remove the text-danger
+    $(".text-danger").remove();
+
+    $.ajax({
+      url: form.attr('action'),
+      type: form.attr('method'),
+      data: form.serialize(), // /converting the form data into array and sending it to server
+      dataType: 'json',
+      success:function(response) {
+
+        manageTable.ajax.reload(null, false); 
+
+        if(response.success === true) {
+          $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+            '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+          '</div>');
+
+
+          // hide the modal
+          $("#addModal").modal('hide');
+
+          // reset the form
+          $("#createForm")[0].reset();
+          $("#createForm .form-group").removeClass('has-error').removeClass('has-success');
+
+        } else {
+
+          if(response.messages instanceof Object) {
+            $.each(response.messages, function(index, value) {
+              var id = $("#"+index);
+
+              id.closest('.form-group')
+              .removeClass('has-error')
+              .removeClass('has-success')
+              .addClass(value.length > 0 ? 'has-error' : 'has-success');
+              
+              id.after(value);
+
+            });
+          } else {
+            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
+            '</div>');
+          }
+        }
+      }
+    }); 
+
+    return false;
+  });
+
+});
+
+// edit function
+function editFunc(id)
+{ 
+  $.ajax({
+    url: app_url + 'stores/fetchStoresDataById/'+id,
+    type: 'post',
+    dataType: 'json',
+    success:function(response) {
+
+      $("#edit_store_name").val(response.name);
+      $("#edit_active").val(response.active);
+
+      // submit the edit from 
+      $("#updateForm").unbind('submit').bind('submit', function() {
+        var form = $(this);
+
+        // remove the text-danger
+        $(".text-danger").remove();
+
+        $.ajax({
+          url: form.attr('action') + '/' + id,
+          type: form.attr('method'),
+          data: form.serialize(), // /converting the form data into array and sending it to server
+          dataType: 'json',
+          success:function(response) {
+
+            manageTable.ajax.reload(null, false); 
+
+            if(response.success === true) {
+              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+              '</div>');
+
+
+              // hide the modal
+              $("#editModal").modal('hide');
+              // reset the form 
+              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
+
+            } else {
+
+              if(response.messages instanceof Object) {
+                $.each(response.messages, function(index, value) {
+                  var id = $("#"+index);
+
+                  id.closest('.form-group')
+                  .removeClass('has-error')
+                  .removeClass('has-success')
+                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
+                  
+                  id.after(value);
+
+                });
+              } else {
+                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
+                '</div>');
+              }
+            }
+          }
+        }); 
+
+        return false;
+      });
+
+    }
+  });
+}
+
+// remove functions 
+function removeFunc(id)
+{
+  if(id) {
+    $("#removeForm").on('submit', function() {
+
+      var form = $(this);
+
+      // remove the text-danger
+      $(".text-danger").remove();
+
+      $.ajax({
+        url: form.attr('action'),
+        type: form.attr('method'),
+        data: { store_id:id }, 
+        dataType: 'json',
+        success:function(response) {
+
+          manageTable.ajax.reload(null, false); 
+
+          if(response.success === true) {
+            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+              '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+            '</div>');
+
+            // hide the modal
+            $("#removeModal").modal('hide');
+
+          } else {
+
+            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
+            '</div>'); 
+          }
+        }
+      }); 
+
+      return false;
+    });
+  }
+}
+
+
 </script>

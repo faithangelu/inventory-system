@@ -2,8 +2,8 @@
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
    
-    <div class="modal" tabindex="-1" role="dialog" id="modal">
-      <div class="modal-dialog" role="document">
+    <div class="modal modal-dynamic" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Modal title</h5>
@@ -14,10 +14,10 @@
           <div class="modal-body">
             <p></p>
           </div>
-          <div class="modal-footer">
+         <!--  <div class="modal-footer">
             <button type="button" class="btn btn-primary">Save changes</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -57,14 +57,22 @@
     <!-- Core plugin JavaScript-->
     <script src="<?php echo base_url() ?>assets/themes/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="<?php echo base_url() ?>assets/themes/vendor/chart.js/Chart.min.js"></script>
+    <!-- <script src="<?php echo base_url() ?>assets/themes/vendor/chart.js/Chart.min.js"></script> -->
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/jquery.dataTables.js"></script>
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/dataTables.bootstrap4.js"></script>
     <!-- Custom scripts for all pages-->
     <script src="<?php echo base_url() ?>assets/themes/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
     <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-datatables.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-charts.min.js"></script>
+    <!-- <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-charts.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>  
+    
+    <script src="<?php echo base_url() ?>assets/plugins/dropzone/dist/dropzone.js"></script>  
+    <script src="<?php echo base_url() ?>assets/plugins/select2/js/select2.min.js"></script>  
+    
+    <script src="<?php echo base_url() ?>assets/dist/js/pages/custom.js"></script>
+
+
   </div>
 </body>
 

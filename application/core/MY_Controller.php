@@ -57,6 +57,18 @@ class Admin_Controller extends MY_Controller
 		$this->load->view('templates/footer',$data);
 	}
 
+
+	function is_mobile()
+	{
+		$CI = & get_instance();
+		$CI->load->library('user_agent');
+
+		if ($CI->agent->is_mobile() && !$CI->agent->is_mobile('ipad')) return TRUE;
+
+		return FALSE;
+	}
+
+
 	public function company_currency()
 	{
 		$this->load->model('model_company');

@@ -1,76 +1,77 @@
-<?php /**
 
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      Manage
-      <small>Stores</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Stores</li>
-    </ol>
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-    <!-- Small boxes (Stat box) -->
+<!-- Example DataTables Card-->
+<div class="card mb-3">
+  <div class="card-header">
     <div class="row">
-      <div class="col-md-12 col-xs-12">
-
-        <div id="messages"></div>
-
-        <?php if($this->session->flashdata('success')): ?>
-          <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('success'); ?>
-          </div>
-        <?php elseif($this->session->flashdata('error')): ?>
-          <div class="alert alert-error alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if(in_array('createStore', $user_permission)): ?>
-          <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Store</button>
-          <br /> <br />
-        <?php endif; ?>
-
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">Manage Stores</h3>
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body">
-            <table id="manageTable" class="table table-bordered table-striped">
-              <thead>
-              <tr>
-                <th>Store Name</th>
-                <th>Status</th>
-                <?php if(in_array('updateStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
-                  <th>Action</th>
-                <?php endif; ?>
-              </tr>
-              </thead>
-
-            </table>
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+      <div class="col-md-8">
+        All <?php echo $page_title  ?>
       </div>
-      <!-- col-md-12 -->
+      <div class="col-md-4 float-right d-flex justify-content-end">
+        <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
+        <a href="<?php echo base_url('stores/start_inventory') ?>" class="btn-sm btn btn-primary " data-toggle="modal" data-target="#addModal"> Add <?php echo $page_title; ?></a> 
+      </div>
     </div>
-    <!-- /.row -->
-    
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Store Name</th>
+            <th>Action</th>                        
+          </tr>
+        </thead>
+        <tbody>
+        <!--   <?php if ($store_data) : ?>
+            <?php foreach ($store_data as $k => $v) : ?>
+              <tr>
+                  <td><?php echo $v['store_data']['id']; ?></td>
+                  <td><?php echo $v['store_data']['name']; ?></td>
+                  <td>
+                      <?php if (in_array('updateUser', $user_permission)) : ?>
+                      <button onclick="window.location.href = '<?php echo base_url('inventory/start_inventory/' . $v['store_data']['id']) ?>'" tooltip-toggle="tooltip" data-placement="top" title="Start Inventory" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-file-text-o"></i></button>
+                      <?php endif; ?>
+                      <?php if (in_array('deleteUser', $user_permission)) : ?>
+                      <button href="<?php echo base_url('inventory/delete/' . $v['store_data']['id']) ?>" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                      <?php endif; ?>
+                  </td>
+              <tr>
+            <?php endforeach; ?>
+          <?php endif; ?> -->
+        </tbody>
+      </table>
+    </div> 
+  </div>
 
-  </section>
-  <!-- /.content -->
+  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
 </div>
-<!-- /.content-wrapper -->
+
+
+<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php echo form_open(site_url('stores/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
+        <div class="fallback">
+          <input name="file" type="file" class="hide" />
+        </div>
+        <?php echo form_close(); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php if(in_array('createStore', $user_permission)): ?>
 <!-- create brand modal -->
@@ -78,8 +79,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Add Store</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
       <form role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
@@ -118,8 +119,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Edit Store</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
       <form role="form" action="<?php echo base_url('stores/update') ?>" method="post" id="updateForm">
@@ -134,8 +135,8 @@
           <div class="form-group">
             <label for="edit_active">Status</label>
             <select class="form-control" id="edit_active" name="edit_active">
+              <option value="0">Inactive</option>
               <option value="1">Active</option>
-              <option value="2">Inactive</option>
             </select>
           </div>
         </div>
@@ -181,16 +182,17 @@
 
 
 
+<script type="text/javascript"> var app_url = '<?php echo base_url() ?>';  </script>
 <script type="text/javascript">
 var manageTable;
 
 $(document).ready(function() {
 
-  $("#storeNav").addClass('active');
+  // $("#storeNav").addClass('active');
 
   // initialize the datatable 
   manageTable = $('#manageTable').DataTable({
-    'ajax': 'fetchStoresData',
+    'ajax': app_url + 'stores/fetchStoresData',
     'order': []
   });
 
@@ -257,7 +259,7 @@ $(document).ready(function() {
 function editFunc(id)
 { 
   $.ajax({
-    url: 'fetchStoresDataById/'+id,
+    url: app_url + 'stores/fetchStoresDataById/'+id,
     type: 'post',
     dataType: 'json',
     success:function(response) {
@@ -370,84 +372,3 @@ function removeFunc(id)
 
 
 </script>
-*/
-?>
-
-<!-- Example DataTables Card-->
-<div class="card mb-3">
-  <div class="card-header">
-    <div class="row">
-      <div class="col-md-10">
-        <i class="fa fa-table"></i> <?php echo $page_title  ?>
-      </div>
-      <div class="col-md-2">
-        <a href="<?php echo base_url('stores/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#file_upload"> Add <?php echo $page_title; ?></a>
-        <a href="<?php echo base_url('stores/create') ?>" class="btn-sm btn btn-primary float-right" data-toggle="modal" data-target="#modal"> Add <?php echo $page_title; ?></a>
-      </div>
-    </div>
-  </div>
-  
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Sizes</th>
-            <!-- <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th> -->
-          </tr>
-        </thead>
-        <!-- <tfoot>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
-          </tr>
-        </tfoot> -->
-        <tbody>
-          <tr>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-            <!-- <td>Edinburgh</td>
-            <td>61</td>
-            <td>2011/04/25</td>
-            <td>$320,800</td> -->
-          </tr>                
-        </tbody>
-      </table>
-    </div> 
-  </div>
-
-  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-</div>
-
-
-<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <?php echo form_open(site_url('tenants/tenant_info/upload'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
-				<div class="fallback">
-					<input name="file" type="file" class="hide" />
-				</div>
-				<?php echo form_close(); ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>

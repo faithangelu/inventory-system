@@ -1,4 +1,4 @@
-
+x<?php /**
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -72,14 +72,54 @@
 </div>
 <!-- /.content-wrapper -->
 
+
+
+*/ ?>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-8">
+                <i class="fa fa-table"></i> <?php echo $page_title ?>                
+            </div>
+            <div class="col-md-4 float-right d-flex justify-content-end">
+                <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
+                <?php if(in_array('createCategory', $user_permission)): ?>
+                  <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">Add <?php echo $page_title; ?></button>
+                  <br /> 
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Category Name</th>
+                    <th>Status</th>
+                    <?php if(in_array('updateCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
+                      <th>Action</th>
+                    <?php endif; ?>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+</div>
+
 <?php if(in_array('createCategory', $user_permission)): ?>
 <!-- create brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Add Category</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
       <form role="form" action="<?php echo base_url('category/create') ?>" method="post" id="createForm">
@@ -112,14 +152,38 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
+<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php echo form_open(site_url('category/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
+        <div class="fallback">
+          <input name="file" type="file" class="hide" />
+        </div>
+        <?php echo form_close(); ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php if(in_array('updateCategory', $user_permission)): ?>
 <!-- edit brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Edit Category</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
       <form role="form" action="<?php echo base_url('category/update') ?>" method="post" id="updateForm">
@@ -159,8 +223,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Remove Category</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
       <form role="form" action="<?php echo base_url('category/remove') ?>" method="post" id="removeForm">
@@ -178,6 +242,8 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
+
+
 
 
 <script type="text/javascript">
@@ -207,6 +273,8 @@ $(document).ready(function() {
       success:function(response) {
 
         manageTable.ajax.reload(null, false); 
+
+        console.log(response);
 
         if(response.success === true) {
           $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+

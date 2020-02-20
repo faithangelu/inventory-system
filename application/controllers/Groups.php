@@ -84,6 +84,15 @@ class Groups extends Admin_Controller
 
 		if($id) {
 
+			$modules = array( 'User','Report', 'Order', 'Group', 'Brand', 'Category', 'Store', 'Product', 'Profile', 'Setting');
+
+			$result = array();
+			foreach ($modules as $k => $v) {
+				$result[$k]['modules'] = $v;
+			}
+			
+			$this->data['modules'] = $result; 
+
 			$this->form_validation->set_rules('group_name', 'Group name', 'required');
 
 			if ($this->form_validation->run() == TRUE) {

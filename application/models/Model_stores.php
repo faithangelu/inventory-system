@@ -62,4 +62,13 @@ class Model_stores extends CI_Model
 		return $query->num_rows();
 	}
 
+	public function insert_batch($data)
+	{
+		if($data) {
+			$insert = $this->db->insert_batch('stores', $data);
+			return ($insert == true) ? true : false;
+		}
+	}
+
+
 }

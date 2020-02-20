@@ -8,6 +8,8 @@ class Stores extends Admin_Controller
 	{
 		parent::__construct();
 
+		$this->load->helper('url');
+
 		$this->not_logged_in();
 
 		$this->data['page_title'] = 'Stores';
@@ -26,7 +28,16 @@ class Stores extends Admin_Controller
 
 		$this->data['page'] = "hi";
 
+		$store_data = $this->model_stores->getStoresData();
+
+		$result = array();
+		foreach ($store_data as $k => $v) {
  
+			$result[$k]['store_data'] = $v;
+			
+		}
+
+		$this->data['store_data'] = $result;
 		$this->render_template('stores/index', $this->data);	
 	}
 
@@ -73,7 +84,7 @@ class Stores extends Admin_Controller
 				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
 			}
 
-			$status = ($value['active'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+			$status = ($value['active'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
 			$result['data'][$key] = array(
 				$value['name'],
@@ -127,6 +138,7 @@ class Stores extends Admin_Controller
         }
 
         echo json_encode($response);
+        $this->load->view('modal', $data);
 	}	
 
 	/*
@@ -212,5 +224,86 @@ class Stores extends Admin_Controller
 
 		echo json_encode($response);
 	}
+
+	
+	public function file_import()
+	{
+		$file = $_FILES['file'];
+
+		print_r($file);
+
+		$fields = array(
+			'id', 'name', 'active'
+		);		
+
+		if ($content = file_get_contents($file['tmp_name']))
+		{			
+			$content = $file['tmp_name'];
+			$csv = array_map('str_getcsv', file($content));
+
+			if (count($csv) > 1)
+			{
+				unset($csv[0]);
+
+				$chunk = array_chunk($csv, 1000, true);
+				foreach ($chunk as $key => $batch)
+				{
+					$batch_data = FALSE;
+					
+													
+					foreach ($batch as $k => $record)
+					{			
+						foreach ($record as $i => $cleanrecord)
+						{						
+							$batch_data[$k][$fields[$i]] = utf8_encode($cleanrecord); 					
+						}
+					}
+
+					// $this->model_stores->create($batch_data);
+				// echo $this->db->last_query();
+
+					if (! ($status = $this->model_stores->insert_batch($batch_data))) {
+						echo json_encode(array('success' => false, 'message' => 'Error occured. Unable to import the data. Please try again.')); exit;
+
+					} else {
+						echo json_encode(array('success' => true, 'message' => 'Data has been successfully imported.')); exit;
+
+					}	
+				}									
+			}
+			
+		}	
+		// if(!in_array('fileImportStore', $this->permission)) {
+		// 	redirect('dashboard', 'refresh');
+		// }
+		
+		// $store_id = $this->input->post('store_id');
+
+		// $response = array();
+		// if($store_id) {
+		// 	$delete = $this->model_stores->remove($store_id);
+		// 	if($delete == true) {
+		// 		$response['success'] = true;
+		// 		$response['messages'] = "Successfully removed";	
+		// 	}
+		// 	else {
+		// 		$response['success'] = false;
+		// 		$response['messages'] = "Error in the database while removing the brand information";
+		// 	}
+		// }
+		// else {
+		// 	$response['success'] = false;
+		// 	$response['messages'] = "Refersh the page again!!";
+		// }
+
+		// echo json_encode($response);
+
+		// var_dump($this->input->post());
+
+		
+	}
+
+
+
 
 }
