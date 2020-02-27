@@ -18,9 +18,10 @@
       <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Store Name</th>
-            <th>Action</th>                        
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>                        
+            <th>Size</th>                        
           </tr>
         </thead>
         <tbody>
@@ -60,7 +61,7 @@
   </div>
 </div>
 
-<?php if(in_array('createStore', $user_permission)): ?>
+<?php if(in_array('createProduct', $user_permission)): ?>
 <!-- create brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
   <div class="modal-dialog" role="document">
@@ -70,7 +71,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
+      <form role="form" action="<?php echo base_url('products/create') ?>" method="post" id="createForm">
 
         <div class="modal-body">
 

@@ -6,6 +6,8 @@ class Groups extends Admin_Controller
 	{
 		parent::__construct();
 
+		$this->data['logged_in'] = $this->session->all_userdata();
+
 		$this->not_logged_in();
 
 		$this->data['page_title'] = 'Groups';
@@ -51,7 +53,7 @@ class Groups extends Admin_Controller
             
         	$data = array(
         		'group_name' => $this->input->post('group_name'),
-        		'permission' => $permission
+        		'group_permission' => $permission
         	);
 
         	$create = $this->model_groups->create($data);

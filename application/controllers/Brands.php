@@ -8,7 +8,9 @@ class Brands extends Admin_Controller
 	{
 		parent::__construct();
 
+		$this->data['logged_in'] = $this->session->all_userdata();
 		$this->not_logged_in();
+
 
 		$this->data['page_title'] = 'Brands';
 

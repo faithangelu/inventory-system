@@ -7,6 +7,8 @@ class Reports extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		$this->data['logged_in'] = $this->session->all_userdata();
+
 		$this->data['page_title'] = 'Stores';
 		$this->load->model('model_reports');
 	}

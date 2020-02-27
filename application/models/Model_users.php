@@ -10,12 +10,12 @@ class Model_users extends CI_Model
 	public function getUserData($userId = null) 
 	{
 		if($userId) {
-			$sql = "SELECT * FROM users WHERE id = ?";
+			$sql = "SELECT * FROM users WHERE user_id = ?";
 			$query = $this->db->query($sql, array($userId));
 			return $query->row_array();
 		}
 
-		$sql = "SELECT * FROM users WHERE id != ?";
+		$sql = "SELECT * FROM users WHERE user_id != ?";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}
@@ -23,34 +23,46 @@ class Model_users extends CI_Model
 	public function getUserGroup($userId = null) 
 	{
 		if($userId) {
-			$sql = "SELECT * FROM user_group WHERE user_id = ?";
+			$sql = "SELECT * FROM user_group WHERE user_group_user_id = ?";
 			$query = $this->db->query($sql, array($userId));
 			$result = $query->row_array();
 
-			$group_id = $result['group_id'];
-			$g_sql = "SELECT * FROM groups WHERE id = ?";
+			$group_id = $result['user_group_group_id'];
+			$g_sql = "SELECT * FROM groups WHERE group_id = ?";
 			$g_query = $this->db->query($g_sql, array($group_id));
 			$q_result = $g_query->row_array();
 			return $q_result;
 		}
 	}
 
-	public function create($data = '', $group_id = null)
-	{
+	// public 
 
-		if($data && $group_id) {
+	public function create($data = '', $group_id = null, $store_id = null)
+	{		
+		// exit;
+		if($data && $group_id && $store_id) {
 			$create = $this->db->insert('users', $data);
 
 			$user_id = $this->db->insert_id();
 
 			$group_data = array(
-				'user_id' => $user_id,
-				'group_id' => $group_id
+				'user_group_user_id' => $user_id,
+				'user_group_group_id' => $group_id
 			);
+
+			foreach ($store_id as $key => $value) {
+				# code...
+				$store_data = array(
+					'store_branch_user_id' => $user_id,
+					'store_branch_stores_id' => $value,
+				);
+				
+				$store_data = $this->db->insert('stores_branch_group', $store_data);
+			}			
 
 			$group_data = $this->db->insert('user_group', $group_data);
 
-			return ($create == true && $group_data) ? true : false;
+			return ($create == true && $group_data && $store_data) ? true : false;
 		}
 	}
 
@@ -61,8 +73,8 @@ class Model_users extends CI_Model
 
 		if($group_id) {
 			// user group
-			$update_user_group = array('group_id' => $group_id);
-			$this->db->where('user_id', $id);
+			$update_user_group = array('user_group_group_id' => $group_id);
+			$this->db->where('user_group_user_id', $id);
 			$user_group = $this->db->update('user_group', $update_user_group);
 			return ($update == true && $user_group == true) ? true : false;	
 		}
@@ -72,7 +84,7 @@ class Model_users extends CI_Model
 
 	public function delete($id)
 	{
-		$this->db->where('id', $id);
+		$this->db->where('user_id', $id);
 		$delete = $this->db->delete('users');
 		return ($delete == true) ? true : false;
 	}
@@ -86,7 +98,7 @@ class Model_users extends CI_Model
 
 	public function fetchUsers() 
 	{
-		$sql = "SELECT * FROM users WHERE status = ?";
+		$sql = "SELECT * FROM users WHERE user_status = ?";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}

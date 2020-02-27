@@ -10,6 +10,7 @@ class Auth extends Admin_Controller
 		parent::__construct();
 
 		$this->load->model('model_auth');
+		$this->load->library('session');
 	}
 
 	/* 

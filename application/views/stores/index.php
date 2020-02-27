@@ -1,4 +1,3 @@
-
 <!-- Example DataTables Card-->
 <div class="card mb-3">
   <div class="card-header">
@@ -18,28 +17,13 @@
       <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Store Name</th>
+            <th>#</th>
+            <th>Store</th>
+            <th>Status</th>
             <th>Action</th>                        
           </tr>
         </thead>
         <tbody>
-        <!--   <?php if ($store_data) : ?>
-            <?php foreach ($store_data as $k => $v) : ?>
-              <tr>
-                  <td><?php echo $v['store_data']['id']; ?></td>
-                  <td><?php echo $v['store_data']['name']; ?></td>
-                  <td>
-                      <?php if (in_array('updateUser', $user_permission)) : ?>
-                      <button onclick="window.location.href = '<?php echo base_url('inventory/start_inventory/' . $v['store_data']['id']) ?>'" tooltip-toggle="tooltip" data-placement="top" title="Start Inventory" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-file-text-o"></i></button>
-                      <?php endif; ?>
-                      <?php if (in_array('deleteUser', $user_permission)) : ?>
-                      <button href="<?php echo base_url('inventory/delete/' . $v['store_data']['id']) ?>" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                      <?php endif; ?>
-                  </td>
-              <tr>
-            <?php endforeach; ?>
-          <?php endif; ?> -->
         </tbody>
       </table>
     </div> 

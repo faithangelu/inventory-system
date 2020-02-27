@@ -10,12 +10,12 @@ class Model_groups extends CI_Model
 	public function getGroupData($groupId = null) 
 	{
 		if($groupId) {
-			$sql = "SELECT * FROM groups WHERE id = ?";
+			$sql = "SELECT * FROM groups WHERE group_id = ?";
 			$query = $this->db->query($sql, array($groupId));
 			return $query->row_array();
 		}
 
-		$sql = "SELECT * FROM groups WHERE id != ?";
+		$sql = "SELECT * FROM groups WHERE group_id != ?";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}
@@ -28,7 +28,7 @@ class Model_groups extends CI_Model
 
 	public function edit($data, $id)
 	{
-		$this->db->where('id', $id);
+		$this->db->where('group_id', $id);
 		$update = $this->db->update('groups', $data);
 		return ($update == true) ? true : false;	
 	}
@@ -50,8 +50,8 @@ class Model_groups extends CI_Model
 	public function getUserGroupByUserId($user_id) 
 	{
 		$sql = "SELECT * FROM user_group 
-		INNER JOIN groups ON groups.id = user_group.group_id 
-		WHERE user_group.user_id = ?";
+		INNER JOIN groups ON groups.group_id = user_group.user_group_group_id 
+		WHERE user_group.user_group_user_id = ?";
 		$query = $this->db->query($sql, array($user_id));
 		$result = $query->row_array();
 

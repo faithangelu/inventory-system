@@ -1,6 +1,6 @@
  <!-- Navigation-->
    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="<?php echo base_url('dashboard') ?>">Start Bootstrap</a>
+    <a class="navbar-brand" href="<?php echo base_url('dashboard') ?>">EFC</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -17,7 +17,7 @@
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
             <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMerchandise" data-parent="#exampleAccordion">
               <i class="fa fa-fw fa-suitcase"></i>
-              <span class="nav-link-text">Trades</span>
+              <span class="nav-link-text">Trade</span>
             </a>
             <ul class="sidenav-second-level collapse" id="collapseMerchandise">
               <?php if(in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
@@ -115,7 +115,7 @@
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">       
-        <form class="form-inline my-2 my-lg-0 mr-lg-2">
+        <form class="form-inline my-2 my-lg-0 mr-lg-2 d-none">
           <div class="input-group">
             <input class="form-control" type="text" placeholder="Search for...">
             <span class="input-group-btn">
@@ -128,7 +128,7 @@
         <?php if (in_array('viewProfile', $user_permission)) : ?>  
           <li class="nav-item">          
           <a class="nav-link" href="<?php echo base_url('users/profile')?>">
-            <i class="fa fa-fw fa-user"></i>Profile</a>
+            <i class="fa fa-fw fa-user"></i>Hi, <?php echo $logged_in['username']; ?></a>
           </li>
         <?php endif; ?>  
 

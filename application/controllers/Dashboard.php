@@ -6,6 +6,7 @@ class Dashboard extends Admin_Controller
 	{
 		parent::__construct();
 
+		$this->data['logged_in'] = $this->session->all_userdata();
 		$this->not_logged_in();
 
 		$this->data['page_title'] = 'Dashboard';
@@ -14,6 +15,8 @@ class Dashboard extends Admin_Controller
 		$this->load->model('model_orders');
 		$this->load->model('model_users');
 		$this->load->model('model_stores');
+
+		$this->load->library('session');
 	}
 
 	/* 
@@ -23,6 +26,8 @@ class Dashboard extends Admin_Controller
 	*/
 	public function index()
 	{
+		$this->load->library('session');
+
 		$this->data['total_products'] = $this->model_products->countTotalProducts();
 		$this->data['total_paid_orders'] = $this->model_orders->countTotalPaidOrders();
 		$this->data['total_users'] = $this->model_users->countTotalUsers();
@@ -33,6 +38,7 @@ class Dashboard extends Admin_Controller
 
 		$this->data['is_admin'] = $is_admin;
 		$this->data['page_breadcrumb'] = 'It all starts here';
+
 		$this->render_template('dashboard', $this->data);
 	}
 }

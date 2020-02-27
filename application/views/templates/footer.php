@@ -51,29 +51,50 @@
         </div>
       </div>
     </div>
+  </div>
+  
     <!-- Bootstrap core JavaScript-->
-    <script src="<?php echo base_url() ?>assets/themes/vendor/jquery/jquery.min.js"></script>
     <script src="<?php echo base_url() ?>assets/themes/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
     <script src="<?php echo base_url() ?>assets/themes/vendor/jquery-easing/jquery.easing.min.js"></script>
+    
     <!-- Page level plugin JavaScript-->
-    <!-- <script src="<?php echo base_url() ?>assets/themes/vendor/chart.js/Chart.min.js"></script> -->
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/jquery.dataTables.js"></script>
+    
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/dataTables.bootstrap4.js"></script>
+
     <!-- Custom scripts for all pages-->
     <script src="<?php echo base_url() ?>assets/themes/js/sb-admin.min.js"></script>
+    
     <!-- Custom scripts for this page-->
     <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-datatables.min.js"></script>
     <!-- <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-charts.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>  
+    <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>   -->
     
     <script src="<?php echo base_url() ?>assets/plugins/dropzone/dist/dropzone.js"></script>  
     <script src="<?php echo base_url() ?>assets/plugins/select2/js/select2.min.js"></script>  
     
+    <script src="https://unpkg.com/swiper/js/swiper.min.js"></script>
     <script src="<?php echo base_url() ?>assets/dist/js/pages/custom.js"></script>
 
+    <!-- https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js -->
 
-  </div>
+
+ <script>
+  $(document).ready(function() {  
+    var mySwiper = new Swiper ('.swiper-container', {
+      // Optional parameters
+      direction: 'horizontal',
+      loop: true,
+
+      // If we need pagination
+      pagination: {
+        el: '.swiper-pagination',
+      },
+    })
+  })
+  </script>
+
 </body>
 
 </html>

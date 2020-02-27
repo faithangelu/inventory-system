@@ -22,8 +22,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
 |
-*/
-$config['base_url'] = '/ASD2';
+// */
+$config['base_url'] = 'https://inventory.sys/';
+// $config['base_url'] = 'https://99a2b5c7.ngrok.io/';
 
 /*
 |--------------------------------------------------------------------------

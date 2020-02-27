@@ -8,6 +8,7 @@ class Inventory extends Admin_Controller
 	{
 		parent::__construct();
 
+		$this->data['logged_in'] = $this->session->all_userdata();
 		$this->not_logged_in();
 
 		$this->data['page_title'] = 'Orders';
@@ -29,19 +30,20 @@ class Inventory extends Admin_Controller
         //     redirect('dashboard', 'refresh');
         // }
 
-        $store_data = $this->model_stores->getActiveStore();
+        $store_data = $this->model_stores->getStoresDatabyUser($this->data['logged_in']['id']);
 
 		$result = array();
 		foreach ($store_data as $k => $v) { 
-            $result[$k]['store_data'] = $v;                    
-
+            $result[$k] = $v;                    
+            // print_r($result); 
 			// $group = $this->model_stores->getUserGroup($v['id']);
 			// $result[$k]['user_group'] = $group;
 		}
-
+		// exit;
         $this->data['store_data'] = $result;        
         $this->data['page_title'] = 'Store Inventory';
-        
+        		$this->data['logged_in'] = $this->session->all_userdata();
+
 		$this->render_template('inventory/index', $this->data);		
 	}
 
@@ -141,21 +143,34 @@ class Inventory extends Admin_Controller
 
 		$this->data['page_title'] = 'Add Order';
 
-		$this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
+		// $this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
 		
-	
+		// var_dump($this->input->post()); exit;
+
+		$data = array(
+			'product_id' => json_encode($this->input->post('product_id')),
+			'warehouse_case' => json_encode($this->input->post('warehouse')),
+			'selling_area_case' => json_encode($this->input->post('selling_area')),
+			'delivery_case' => json_encode($this->input->post('delivery')),
+			'stock_transfer' => json_encode($this->input->post('stock_transfer')),
+			'notes' => json_encode($this->input->post('notes')),
+			'inventory_date' => date("m-d-Y")
+		) ;
+
+		var_dump($data); exit;
+
         if ($this->form_validation->run() == TRUE) {        	
         	
-        	$order_id = $this->model_orders->create();
+        	$order_id = $this->model_inventory->create();
         	
-        	if($order_id) {
-        		$this->session->set_flashdata('success', 'Successfully created');
-        		redirect('orders/update/'.$order_id, 'refresh');
-        	}
-        	else {
-        		$this->session->set_flashdata('errors', 'Error occurred!!');
-        		redirect('orders/create/', 'refresh');
-        	}
+        	// if($order_id) {
+        	// 	$this->session->set_flashdata('success', 'Successfully created');
+        	// 	redirect('orders/update/'.$order_id, 'refresh');
+        	// }
+        	// else {
+        	// 	$this->session->set_flashdata('errors', 'Error occurred!!');
+        	// 	redirect('orders/create/', 'refresh');
+        	// }
         }
         else {
             // false case
@@ -186,12 +201,9 @@ class Inventory extends Admin_Controller
 
 	/*
 	* It gets the all the active product inforamtion from the product table 
-	* This function is used in the order page, for the product selection in the table
-	* The response is return on the json format.
-	*/
-	public function getTableProductRow()
-	{
-		$products = $this->model_products->getActiveProductData();
+
+
+l		$products = $this->model_products->getActiveProductData();
 		echo json_encode($products);
 	}
 
@@ -268,10 +280,11 @@ class Inventory extends Admin_Controller
 			redirect('dashboard', 'refresh');
 		}
 
-		$getStoreBranch = $this->model_stores->getActiveStore($id);
+		$getStoreBranch = $this->model_products->getProduct();
 
 		$this->data['page_title'] = 'Start Inventory Count';
 		$this->data['store_branch'] = $getStoreBranch;
+
 
 		// print_r($this->data['page_title']); 
 
@@ -313,7 +326,11 @@ class Inventory extends Admin_Controller
       //   	$this->data['products'] = $this->model_products->getActiveProductData();      	
 
       //   }
+		if ($this->is_mobile()) {
+            $this->render_template('inventory/create_mobile1', $this->data);
+        } else {
             $this->render_template('inventory/create', $this->data);
+		}
 	}
 
 	/*
@@ -358,142 +375,147 @@ class Inventory extends Admin_Controller
             redirect('dashboard', 'refresh');
         }
         
-		if($id) {
-			$order_data = $this->model_orders->getOrdersData($id);
-			$orders_items = $this->model_orders->getOrdersItemData($id);
-			$company_info = $this->model_company->getCompanyData(1);
+	// 	if($id) {
+	// 		$order_data = $this->model_orders->getOrdersData($id);
+	// 		$orders_items = $this->model_orders->getOrdersItemData($id);
+	// 		$company_info = $this->model_company->getCompanyData(1);
 
-			$order_date = date('d/m/Y', $order_data['date_time']);
-			$paid_status = ($order_data['paid_status'] == 1) ? "Paid" : "Unpaid";
+	// 		$order_date = date('d/m/Y', $order_data['date_time']);
+	// 		$paid_status = ($order_data['paid_status'] == 1) ? "Paid" : "Unpaid";
 
-			$html = '<!-- Main content -->
-			<!DOCTYPE html>
-			<html>
-			<head>
-			  <meta charset="utf-8">
-			  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-			  <title>AdminLTE 2 | Invoice</title>
-			  <!-- Tell the browser to be responsive to screen width -->
-			  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-			  <!-- Bootstrap 3.3.7 -->
-			  <link rel="stylesheet" href="'.base_url('assets/bower_components/bootstrap/dist/css/bootstrap.min.css').'">
-			  <!-- Font Awesome -->
-			  <link rel="stylesheet" href="'.base_url('assets/bower_components/font-awesome/css/font-awesome.min.css').'">
-			  <link rel="stylesheet" href="'.base_url('assets/dist/css/AdminLTE.min.css').'">
-			</head>
-			<body onload="window.print();">
+	// 		$html = '<!-- Main content -->
+	// 		<!DOCTYPE html>
+	// 		<html>
+	// 		<head>
+	// 		  <meta charset="utf-8">
+	// 		  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	// 		  <title>AdminLTE 2 | Invoice</title>
+	// 		  <!-- Tell the browser to be responsive to screen width -->
+	// 		  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	// 		  <!-- Bootstrap 3.3.7 -->
+	// 		  <link rel="stylesheet" href="'.base_url('assets/bower_components/bootstrap/dist/css/bootstrap.min.css').'">
+	// 		  <!-- Font Awesome -->
+	// 		  <link rel="stylesheet" href="'.base_url('assets/bower_components/font-awesome/css/font-awesome.min.css').'">
+	// 		  <link rel="stylesheet" href="'.base_url('assets/dist/css/AdminLTE.min.css').'">
+	// 		</head>
+	// 		<body onload="window.print();">
 			
-			<div class="wrapper">
-			  <section class="invoice">
-			    <!-- title row -->
-			    <div class="row">
-			      <div class="col-xs-12">
-			        <h2 class="page-header">
-			          '.$company_info['company_name'].'
-			          <small class="pull-right">Date: '.$order_date.'</small>
-			        </h2>
-			      </div>
-			      <!-- /.col -->
-			    </div>
-			    <!-- info row -->
-			    <div class="row invoice-info">
+	// 		<div class="wrapper">
+	// 		  <section class="invoice">
+	// 		    <!-- title row -->
+	// 		    <div class="row">
+	// 		      <div class="col-xs-12">
+	// 		        <h2 class="page-header">
+	// 		          '.$company_info['company_name'].'
+	// 		          <small class="pull-right">Date: '.$order_date.'</small>
+	// 		        </h2>
+	// 		      </div>
+	// 		      <!-- /.col -->
+	// 		    </div>
+	// 		    <!-- info row -->
+	// 		    <div class="row invoice-info">
 			      
-			      <div class="col-sm-4 invoice-col">
+	// 		      <div class="col-sm-4 invoice-col">
 			        
-			        <b>Bill ID:</b> '.$order_data['bill_no'].'<br>
-			        <b>Name:</b> '.$order_data['customer_name'].'<br>
-			        <b>Address:</b> '.$order_data['customer_address'].' <br />
-			        <b>Phone:</b> '.$order_data['customer_phone'].'
-			      </div>
-			      <!-- /.col -->
-			    </div>
-			    <!-- /.row -->
+	// 		        <b>Bill ID:</b> '.$order_data['bill_no'].'<br>
+	// 		        <b>Name:</b> '.$order_data['customer_name'].'<br>
+	// 		        <b>Address:</b> '.$order_data['customer_address'].' <br />
+	// 		        <b>Phone:</b> '.$order_data['customer_phone'].'
+	// 		      </div>
+	// 		      <!-- /.col -->
+	// 		    </div>
+	// 		    <!-- /.row -->
 
-			    <!-- Table row -->
-			    <div class="row">
-			      <div class="col-xs-12 table-responsive">
-			        <table class="table table-striped">
-			          <thead>
-			          <tr>
-			            <th>Product name</th>
-			            <th>Price</th>
-			            <th>Qty</th>
-			            <th>Amount</th>
-			          </tr>
-			          </thead>
-			          <tbody>'; 
+	// 		    <!-- Table row -->
+	// 		    <div class="row">
+	// 		      <div class="col-xs-12 table-responsive">
+	// 		        <table class="table table-striped">
+	// 		          <thead>
+	// 		          <tr>
+	// 		            <th>Product name</th>
+	// 		            <th>Price</th>
+	// 		            <th>Qty</th>
+	// 		            <th>Amount</th>
+	// 		          </tr>
+	// 		          </thead>
+	// 		          <tbody>'; 
 
-			          foreach ($orders_items as $k => $v) {
+	// 		          foreach ($orders_items as $k => $v) {
 
-			          	$product_data = $this->model_products->getProductData($v['product_id']); 
+	// 		          	$product_data = $this->model_products->getProductData($v['product_id']); 
 			          	
-			          	$html .= '<tr>
-				            <td>'.$product_data['name'].'</td>
-				            <td>'.$v['rate'].'</td>
-				            <td>'.$v['qty'].'</td>
-				            <td>'.$v['amount'].'</td>
-			          	</tr>';
-			          }
+	// 		          	$html .= '<tr>
+	// 			            <td>'.$product_data['name'].'</td>
+	// 			            <td>'.$v['rate'].'</td>
+	// 			            <td>'.$v['qty'].'</td>
+	// 			            <td>'.$v['amount'].'</td>
+	// 		          	</tr>';
+	// 		          }
 			          
-			          $html .= '</tbody>
-			        </table>
-			      </div>
-			      <!-- /.col -->
-			    </div>
-			    <!-- /.row -->
+	// 		          $html .= '</tbody>
+	// 		        </table>
+	// 		      </div>
+	// 		      <!-- /.col -->
+	// 		    </div>
+	// 		    <!-- /.row -->
 
-			    <div class="row">
+	// 		    <div class="row">
 			      
-			      <div class="col-xs-6 pull pull-right">
+	// 		      <div class="col-xs-6 pull pull-right">
 
-			        <div class="table-responsive">
-			          <table class="table">
-			            <tr>
-			              <th style="width:50%">Gross Amount:</th>
-			              <td>'.$order_data['gross_amount'].'</td>
-			            </tr>';
+	// 		        <div class="table-responsive">
+	// 		          <table class="table">
+	// 		            <tr>
+	// 		              <th style="width:50%">Gross Amount:</th>
+	// 		              <td>'.$order_data['gross_amount'].'</td>
+	// 		            </tr>';
 
-			            if($order_data['service_charge'] > 0) {
-			            	$html .= '<tr>
-				              <th>Service Charge ('.$order_data['service_charge_rate'].'%)</th>
-				              <td>'.$order_data['service_charge'].'</td>
-				            </tr>';
-			            }
+	// 		            if($order_data['service_charge'] > 0) {
+	// 		            	$html .= '<tr>
+	// 			              <th>Service Charge ('.$order_data['service_charge_rate'].'%)</th>
+	// 			              <td>'.$order_data['service_charge'].'</td>
+	// 			            </tr>';
+	// 		            }
 
-			            if($order_data['vat_charge'] > 0) {
-			            	$html .= '<tr>
-				              <th>Vat Charge ('.$order_data['vat_charge_rate'].'%)</th>
-				              <td>'.$order_data['vat_charge'].'</td>
-				            </tr>';
-			            }
+	// 		            if($order_data['vat_charge'] > 0) {
+	// 		            	$html .= '<tr>
+	// 			              <th>Vat Charge ('.$order_data['vat_charge_rate'].'%)</th>
+	// 			              <td>'.$order_data['vat_charge'].'</td>
+	// 			            </tr>';
+	// 		            }
 			            
 			            
-			            $html .=' <tr>
-			              <th>Discount:</th>
-			              <td>'.$order_data['discount'].'</td>
-			            </tr>
-			            <tr>
-			              <th>Net Amount:</th>
-			              <td>'.$order_data['net_amount'].'</td>
-			            </tr>
-			            <tr>
-			              <th>Paid Status:</th>
-			              <td>'.$paid_status.'</td>
-			            </tr>
-			          </table>
-			        </div>
-			      </div>
-			      <!-- /.col -->
-			    </div>
-			    <!-- /.row -->
-			  </section>
-			  <!-- /.content -->
-			</div>
-		</body>
-	</html>';
+	// 		            $html .=' <tr>
+	// 		              <th>Discount:</th>
+	// 		              <td>'.$order_data['discount'].'</td>
+	// 		            </tr>
+	// 		            <tr>
+	// 		              <th>Net Amount:</th>
+	// 		              <td>'.$order_data['net_amount'].'</td>
+	// 		            </tr>
+	// 		            <tr>
+	// 		              <th>Paid Status:</th>
+	// 		              <td>'.$paid_status.'</td>
+	// 		            </tr>
+	// 		          </table>
+	// 		        </div>
+	// 		      </div>
+	// 		      <!-- /.col -->
+	// 		    </div>
+	// 		    <!-- /.row -->
+	// 		  </section>
+	// 		  <!-- /.content -->
+	// 		</div>
+	// 	</body>
+	// </html>';
 
-			  echo $html;
-		}
+	// 		  echo $html;
+	// 	}
+	// }
+	}
+
+	public function create_data() {
+		var_dump($this->input->post()); exit();
 	}
 
 }

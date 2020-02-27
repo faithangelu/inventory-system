@@ -6,8 +6,7 @@ class Users extends Admin_Controller
 	{
 		parent::__construct();
 
-		$this->not_logged_in();
-		
+		$this->data['logged_in'] = $this->session->all_userdata();
 		$this->data['page_title'] = 'Users';
 		
 
@@ -30,7 +29,7 @@ class Users extends Admin_Controller
 
 			$result[$k]['user_info'] = $v;
 
-			$user_group = $this->model_users->getUserGroup($v['id']);
+			$user_group = $this->model_users->getUserGroup($v['user_id']);
 			$result[$k]['user_group'] = $user_group;
 		}
 		
@@ -52,20 +51,8 @@ class Users extends Admin_Controller
 			redirect('dashboard', 'refresh');
 		}
 
-		// $store_data = 
-
-		$result = array();
-		foreach ($store_data as $k => $v) {
- 
-			$result[$k]['store_data'] = $v;
-
-			$group = $this->model_users->getUserGroup($v['id']);
-			$result[$k]['user_group'] = $group;
-		}
-
-	
-
-
+		$response = array();
+		
 		$this->form_validation->set_rules('groups', 'Group', 'required');
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|is_unique[users.username]');
 		$this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[users.email]');
@@ -84,9 +71,14 @@ class Users extends Admin_Controller
         		'lastname' => $this->input->post('lname'),
         		'phone' => $this->input->post('phone'),
         		'gender' => $this->input->post('gender'),
+        		// 'store_branch_id' => json_encode($this->input->post('stores')),
+        		'status' => $this->input->post('active')
         	);
 
-        	$create = $this->model_users->create($data, $this->input->post('groups'));
+        	// var_dump($data);
+
+        	$create = $this->model_users->create($data, $this->input->post('groups'), $this->input->post('stores'));
+
         	if($create == true) {
         		$this->session->set_flashdata('success', 'Successfully created');
         		redirect('users/', 'refresh');
@@ -94,18 +86,26 @@ class Users extends Admin_Controller
         	else {
         		$this->session->set_flashdata('errors', 'Error occurred!!');
         		redirect('users/create', 'refresh');
+
+        		// $response['success'] = true;
+        		// $response['messages'] = 'Succesfully created';
         	}
+        	// else {
+        	// 	$response['success'] = false;
+        	// 	$response['messages'] = 'Error in the database while creating the brand information';			
+        	// }
         }
         else {
             // false case
-        	$group_data = $this->model_groups->getGroupData();
-        	$this->data['group_data'] = $group_data;
-			
-			// $this->load->view('modal');
-            $this->render_template('users/create', $this->data);
+        	// $group_data = $this->model_groups->getGroupData();
+        	// $response = $this->data['group_data'] =  $group_data;
+        	$response['success'] = false;
+        	foreach ($_POST as $key => $value) {
+        		$response['messages'][$key] = form_error($key);
+        	}
         }	
-
 		
+		echo json_encode($response);
 	}
 
 	public function password_hash($pass = '')
@@ -121,6 +121,7 @@ class Users extends Admin_Controller
 		if(!in_array('updateUser', $this->permission)) {
 			redirect('dashboard', 'refresh');
 		}
+		
 
 		if($id) {
 			$this->form_validation->set_rules('groups', 'Group', 'required');
@@ -131,7 +132,7 @@ class Users extends Admin_Controller
 
 			if ($this->form_validation->run() == TRUE) {
 	            // true case
-		        if(empty($this->input->post('password')) && empty($this->input->post('cpassword'))) {
+		        // if(empty($this->input->post('password')) && empty($this->input->post('cpassword'))) {
 		        	$data = array(
 		        		'username' => $this->input->post('username'),
 		        		'email' => $this->input->post('email'),
@@ -150,50 +151,50 @@ class Users extends Admin_Controller
 		        		$this->session->set_flashdata('errors', 'Error occurred!!');
 		        		redirect('users/edit/'.$id, 'refresh');
 		        	}
-		        }
-		        else {
-		        	$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]');
-					$this->form_validation->set_rules('cpassword', 'Confirm password', 'trim|required|matches[password]');
+		        // }
+		   //      else {
+		   //      	$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]');
+					// $this->form_validation->set_rules('cpassword', 'Confirm password', 'trim|required|matches[password]');
 
-					if($this->form_validation->run() == TRUE) {
+					// if($this->form_validation->run() == TRUE) {
 
-						$password = $this->password_hash($this->input->post('password'));
+					// 	$password = $this->password_hash($this->input->post('password'));
 
-						$data = array(
-			        		'username' => $this->input->post('username'),
-			        		'password' => $password,
-			        		'email' => $this->input->post('email'),
-			        		'firstname' => $this->input->post('fname'),
-			        		'lastname' => $this->input->post('lname'),
-			        		'phone' => $this->input->post('phone'),
-			        		'gender' => $this->input->post('gender'),
-			        	);
+					// 	$data = array(
+			  //       		'username' => $this->input->post('username'),
+			  //       		'password' => $password,
+			  //       		'email' => $this->input->post('email'),
+			  //       		'firstname' => $this->input->post('fname'),
+			  //       		'lastname' => $this->input->post('lname'),
+			  //       		'phone' => $this->input->post('phone'),
+			  //       		'gender' => $this->input->post('gender'),
+			  //       	);
 
-			        	$update = $this->model_users->edit($data, $id, $this->input->post('groups'));
-			        	if($update == true) {
-			        		$this->session->set_flashdata('success', 'Successfully updated');
-			        		redirect('users/', 'refresh');
-			        	}
-			        	else {
-			        		$this->session->set_flashdata('errors', 'Error occurred!!');
-			        		redirect('users/edit/'.$id, 'refresh');
-			        	}
-					}
-			        else {
-			            // false case
-			        	$user_data = $this->model_users->getUserData($id);
-			        	$groups = $this->model_users->getUserGroup($id);
+			  //       	$update = $this->model_users->edit($data, $id, $this->input->post('groups'));
+			  //       	if($update == true) {
+			  //       		$this->session->set_flashdata('success', 'Successfully updated');
+			  //       		redirect('users/', 'refresh');
+			  //       	}
+			  //       	else {
+			  //       		$this->session->set_flashdata('errors', 'Error occurred!!');
+			  //       		redirect('users/edit/'.$id, 'refresh');
+			  //       	}
+					// }
+			  //       else {
+			  //           // false case
+			  //       	$user_data = $this->model_users->getUserData($id);
+			  //       	$groups = $this->model_users->getUserGroup($id);
 
-			        	$this->data['user_data'] = $user_data;
-			        	$this->data['user_group'] = $groups;
+			  //       	$this->data['user_data'] = $user_data;
+			  //       	$this->data['user_group'] = $groups;
 
-			            $group_data = $this->model_groups->getGroupData();
-			        	$this->data['group_data'] = $group_data;
+			  //           $group_data = $this->model_groups->getGroupData();
+			  //       	$this->data['group_data'] = $group_data;
 
-						$this->render_template('users/edit', $this->data);	
-			        }	
+					// 	$this->render_template('users/edit', $this->data);	
+			  //       }	
 
-		        }
+		   //      }
 	        }
 	        else {
 	            // false case
@@ -362,21 +363,21 @@ class Users extends Admin_Controller
 			$buttons = '';
 
 			if(in_array('updateStore', $this->permission)) {
-				$buttons = '<button type="button" class="btn btn-default btn-sm" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button>';
+				$buttons = '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc('.$value['user_id'].')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button>';
 			}
 
 			if(in_array('deleteStore', $this->permission)) {
-				$buttons .= ' <button type="button" class="btn btn-warning btn-sm" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc('.$value['user_id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
 			}
 
-			$status = ($value['status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+			$status = ($value['user_status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
 			$result['data'][$key] = array(
-				$value['id'],
-				$value['username'],
-				$value['email'],
-				$value['firstname'] . $value['lastname'],
-				$value['phone'],
+				$value['user_id'],
+				$value['user_username'],
+				$value['user_email'],
+				$value['user_firstname'] . $value['user_lastname'],
+				$value['user_phone'],
 				$status,
 				$buttons
 			);
@@ -384,6 +385,14 @@ class Users extends Admin_Controller
 		} // /foreach
 
 		echo json_encode($result);
+	}
+
+	public function fetchUserDataById($id) 
+	{
+		if($id) {
+			$data = $this->model_users->getUserData($id);
+			echo json_encode($data);
+		}
 	}
 
 

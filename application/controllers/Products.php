@@ -8,7 +8,9 @@ class Products extends Admin_Controller
 	{
 		parent::__construct();
 
+        $this->data['logged_in'] = $this->session->all_userdata();
 		$this->not_logged_in();
+
 
 		$this->data['page_title'] = 'Products';
 
@@ -41,43 +43,39 @@ class Products extends Admin_Controller
 
 		$data = $this->model_products->getProduct();
 
-        var_dump($data); exit;
+        // var_dump($data); exit;
 
 		foreach ($data as $key => $value) {
 
             // $store_data = $this->model_stores->getStoresData($value['store_id']);
 			// button
-            $buttons = '';
-            if(in_array('updateProduct', $this->permission)) {
-    			$buttons .= '<a href="'.base_url('products/update/'.$value['id']).'" class="btn btn-default"><i class="fa fa-pencil"></i></a>';
-            }
+   //          $buttons = '';
+   //          if(in_array('updateProduct', $this->permission)) {
+   //  			$buttons .= '<a href="'.base_url('products/update/'.$value['product_id']).'" class="btn btn-default"><i class="fa fa-pencil"></i></a>';
+   //          }
 
-            if(in_array('deleteProduct', $this->permission)) { 
-    			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
-            }
+   //          if(in_array('deleteProduct', $this->permission)) { 
+   //  			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+   //          }
 			
 
-			$img = '<img src="'.base_url($value['image']).'" alt="'.$value['name'].'" class="img-circle" width="50" height="50" />';
+			// $img = '<img src="'.base_url($value['image']).'" alt="'.$value['name'].'" class="img-circle" width="50" height="50" />';
 
-            $availability = ($value['availability'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+   //          $availability = ($value['availability'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
 
-            $qty_status = '';
-            if($value['qty'] <= 10) {
-                $qty_status = '<span class="label label-warning">Low !</span>';
-            } else if($value['qty'] <= 0) {
-                $qty_status = '<span class="label label-danger">Out of stock !</span>';
-            }
+   //          $qty_status = '';
+   //          if($value['qty'] <= 10) {
+   //              $qty_status = '<span class="label label-warning">Low !</span>';
+   //          } else if($value['qty'] <= 0) {
+   //              $qty_status = '<span class="label label-danger">Out of stock !</span>';
+   //          }
 
 
-			$result['data'][$key] = array(
-				$img,
-				$value['sku'],
-				$value['name'],
-				$value['price'],
-                $value['qty'] . ' ' . $qty_status,
-                $store_data['name'],
-				$availability,
-				$buttons
+			$result['data'][$key] = array(				
+				$value['product_id'],
+                $value['product_name'],
+                $value['product_category_id'],
+                $value['product_size']
 			);
 		} // /foreach
 
@@ -96,11 +94,11 @@ class Products extends Admin_Controller
         }
 
 		$this->form_validation->set_rules('product_name', 'Product name', 'trim|required');
-		$this->form_validation->set_rules('sku', 'SKU', 'trim|required');
-		$this->form_validation->set_rules('price', 'Price', 'trim|required');
-		$this->form_validation->set_rules('qty', 'Qty', 'trim|required');
-        $this->form_validation->set_rules('store', 'Store', 'trim|required');
-		$this->form_validation->set_rules('availability', 'Availability', 'trim|required');
+		// $this->form_validation->set_rules('sku', 'SKU', 'trim|required');
+		// $this->form_validation->set_rules('price', 'Price', 'trim|required');
+		// $this->form_validation->set_rules('qty', 'Qty', 'trim|required');
+        // $this->form_validation->set_rules('store', 'Store', 'trim|required');
+		// $this->form_validation->set_rules('availability', 'Availability', 'trim|required');
 		
 	
         if ($this->form_validation->run() == TRUE) {
@@ -203,35 +201,23 @@ class Products extends Admin_Controller
         }
 
         $this->form_validation->set_rules('product_name', 'Product name', 'trim|required');
-        $this->form_validation->set_rules('sku', 'SKU', 'trim|required');
-        $this->form_validation->set_rules('price', 'Price', 'trim|required');
-        $this->form_validation->set_rules('qty', 'Qty', 'trim|required');
-        $this->form_validation->set_rules('store', 'Store', 'trim|required');
-        $this->form_validation->set_rules('availability', 'Availability', 'trim|required');
+        $this->form_validation->set_rules('product_status', 'Product status', 'trim|required');
 
         if ($this->form_validation->run() == TRUE) {
             // true case
             
             $data = array(
-                'name' => $this->input->post('product_name'),
-                'sku' => $this->input->post('sku'),
-                'price' => $this->input->post('price'),
-                'qty' => $this->input->post('qty'),
-                'description' => $this->input->post('description'),
-                'attribute_value_id' => json_encode($this->input->post('attributes_value_id')),
-                'brand_id' => json_encode($this->input->post('brands')),
-                'category_id' => json_encode($this->input->post('category')),
-                'store_id' => $this->input->post('store'),
-                'availability' => $this->input->post('availability'),
+                'product_name' => $this->input->post('product_name'),                
             );
 
             
-            if($_FILES['product_image']['size'] > 0) {
-                $upload_image = $this->upload_image();
-                $upload_image = array('image' => $upload_image);
+            
+            // if($_FILES['product_image']['size'] > 0) {
+            //     $upload_image = $this->upload_image();
+            //     $upload_image = array('image' => $upload_image);
                 
-                $this->model_products->update($upload_image, $product_id);
-            }
+            //     $this->model_products->update($upload_image, $product_id);
+            // }
 
             $update = $this->model_products->update($data, $product_id);
             if($update == true) {
@@ -346,6 +332,5 @@ class Products extends Admin_Controller
             
         }           
     }
-
 
 }
