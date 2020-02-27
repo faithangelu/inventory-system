@@ -129,16 +129,16 @@
           <?php if ($groups_data) : ?>
             <?php foreach ($groups_data as $k => $v) : ?>
               <tr>
-                <td><?php echo $v['id']; ?></td>
+                <td><?php echo $v['group_id']; ?></td>
                 <td><?php echo $v['group_name']; ?></td>
                
                 <?php if (in_array('updateGroup', $user_permission) || in_array('deleteGroup', $user_permission)) : ?>
                   <td>
                     <?php if (in_array('updateGroup', $user_permission)) : ?>
-                      <button onclick="window.location.href = '<?php echo base_url('groups/edit/'.$v['id']) ?>'"  tooltip-toggle="tooltip" data-placement="top" title="Permission" class="btn btn-sm btn-default"><i class="fa fa-fw fa-lock"></i></button>
+                      <button onclick="window.location.href = '<?php echo base_url('groups/edit/'.$v['group_id']) ?>'"  tooltip-toggle="tooltip" data-placement="top" title="Permission" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-lock"></i></button>
                     <?php endif; ?>
                     <?php if (in_array('deleteGroup', $user_permission)) : ?>
-                      <button onclick="window.location.href = '<?php echo base_url('groups/delete/'.$v['id']) ?>'" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                      <button onclick="window.location.href = '<?php echo base_url('groups/delete/'.$v['group_id']) ?>'" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                     <?php endif; ?>
                   </td>
                 <?php endif; ?>

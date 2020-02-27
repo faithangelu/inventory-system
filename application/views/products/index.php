@@ -247,7 +247,7 @@ $(document).ready(function() {
 function editFunc(id)
 { 
   $.ajax({
-    url: app_url + 'stores/fetchStoresDataById/'+id,
+    url: app_url + 'products/fetchStoresDataById/'+id,
     type: 'post',
     dataType: 'json',
     success:function(response) {
