@@ -10,8 +10,9 @@
         </div>
     </div>
     <div class="card-body">
+
         <div class="table-responsive">
-            <table class="table table-bordered" id="manageTable" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -44,18 +45,3 @@
     <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
 </div>
 
-<script type="text/javascript">
-var manageTable;
-
-$(document).ready(function() {
-
-  // $("#storeNav").addClass('active');
-
-  // initialize the datatable 
-  manageTable = $('#manageTable').DataTable({
-    'ajax': app_url + 'stores/fetchStoresData',
-    'order': []
-  });
-
-});  
-</script>

@@ -31,13 +31,14 @@ class Auth extends Admin_Controller
 
            	if($email_exists == TRUE) {
            		$login = $this->model_auth->login($this->input->post('email'), $this->input->post('password'));
-
+           		// print_r($login); 
+           		// exit;
            		if($login) {
 
            			$logged_in_sess = array(
-           				'id' => $login['id'],
-				        'username'  => $login['username'],
-				        'email'     => $login['email'],
+           				'id' => $login['user_id'],
+				        'username'  => $login['user_username'],
+				        'email'     => $login['user_email'],
 				        'logged_in' => TRUE
 					);
 

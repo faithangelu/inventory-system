@@ -60,17 +60,17 @@
     
     <!-- Page level plugin JavaScript-->
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/jquery.dataTables.js"></script>
-    
     <script src="<?php echo base_url() ?>assets/themes/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="<?php echo base_url() ?>assets/themes/js/sb-admin.min.js"></script>
+    <!-- <script src="<?php echo base_url() ?>assets/themes/js/sb-admin.min.js"></script> -->
     
     <!-- Custom scripts for this page-->
-    <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-datatables.min.js"></script>
+    <!-- <script src="<?php echo base_url() ?>assets/themes/vendor/chart.js/Chart.min.js"></script> -->
     <!-- <script src="<?php echo base_url() ?>assets/themes/js/sb-admin-charts.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>   -->
-    
+   
     <script src="<?php echo base_url() ?>assets/plugins/dropzone/dist/dropzone.js"></script>  
     <script src="<?php echo base_url() ?>assets/plugins/select2/js/select2.min.js"></script>  
     
@@ -90,6 +90,7 @@
       // If we need pagination
       pagination: {
         el: '.swiper-pagination',
+        clickable: true
       },
     })
   })

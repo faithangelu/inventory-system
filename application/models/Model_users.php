@@ -10,7 +10,12 @@ class Model_users extends CI_Model
 	public function getUserData($userId = null) 
 	{
 		if($userId) {
-			$sql = "SELECT * FROM users WHERE user_id = ?";
+			$sql = "SELECT * FROM users 
+					LEFT JOIN user_group ON users.user_id = user_group.user_group_user_id 
+					LEFT JOIN groups ON user_group.user_group_group_id = groups.group_id 
+					LEFT JOIN stores_branch_group ON users.user_id = stores_branch_group.store_branch_user_id 
+					LEFT JOIN stores ON stores_branch_group.store_branch_store_id = stores.store_id 
+					WHERE user_id = ?";
 			$query = $this->db->query($sql, array($userId));
 			return $query->row_array();
 		}
@@ -39,7 +44,6 @@ class Model_users extends CI_Model
 
 	public function create($data = '', $group_id = null, $store_id = null)
 	{		
-		// exit;
 		if($data && $group_id && $store_id) {
 			$create = $this->db->insert('users', $data);
 
@@ -54,21 +58,20 @@ class Model_users extends CI_Model
 				# code...
 				$store_data = array(
 					'store_branch_user_id' => $user_id,
-					'store_branch_stores_id' => $value,
+					'store_branch_store_id' => $value,
 				);
 				
 				$store_data = $this->db->insert('stores_branch_group', $store_data);
 			}			
 
 			$group_data = $this->db->insert('user_group', $group_data);
-
 			return ($create == true && $group_data && $store_data) ? true : false;
 		}
 	}
 
 	public function edit($data = array(), $id = null, $group_id = null)
 	{
-		$this->db->where('id', $id);
+		$this->db->where('user_id', $id);
 		$update = $this->db->update('users', $data);
 
 		if($group_id) {
@@ -83,9 +86,9 @@ class Model_users extends CI_Model
 	}
 
 	public function delete($id)
-	{
+	{	
 		$this->db->where('user_id', $id);
-		$delete = $this->db->delete('users');
+		$delete = $this->db->update('users', array('user_deleted' => 1));
 		return ($delete == true) ? true : false;
 	}
 
@@ -98,7 +101,7 @@ class Model_users extends CI_Model
 
 	public function fetchUsers() 
 	{
-		$sql = "SELECT * FROM users WHERE user_status = ?";
+		$sql = "SELECT * FROM users WHERE user_status = ? AND user_deleted = 0";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}

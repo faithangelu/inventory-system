@@ -17,6 +17,7 @@ class Inventory extends Admin_Controller
 		$this->load->model('model_products');
 		$this->load->model('model_company');
 		$this->load->model('model_stores');
+		$this->load->model('model_inventory');
 
 		/* $this->load->helper('assets'); */
 	}
@@ -142,47 +143,49 @@ class Inventory extends Admin_Controller
         }
 
 		$this->data['page_title'] = 'Add Order';
-
-		// $this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
-		
 		// var_dump($this->input->post()); exit;
+		
 
-		$data = array(
-			'product_id' => json_encode($this->input->post('product_id')),
-			'warehouse_case' => json_encode($this->input->post('warehouse')),
-			'selling_area_case' => json_encode($this->input->post('selling_area')),
-			'delivery_case' => json_encode($this->input->post('delivery')),
-			'stock_transfer' => json_encode($this->input->post('stock_transfer')),
-			'notes' => json_encode($this->input->post('notes')),
-			'inventory_date' => date("m-d-Y")
-		) ;
+		$data = array();
+		for ($i = 0; $i < count($this->input->post('product_id')); $i++) {
+			$data[$i] = array(
+			'inventory_product_id' => isset($this->input->post('product_id')[$i]) ? $this->input->post('product_id')[$i] : $this->input->post('product_id')[$i],
+			'inventory_user_id' => $this->input->post('user_id')[$i], 
+			'inventory_store_id' => $this->input->post('store_id')[$i], 
+			'inventory_osp' => $this->input->post('osp')[$i],
+			'inventory_warehouse_case' => $this->input->post('warehouse')[$i],
+			'inventory_selling_area_case' => $this->input->post('selling_area')[$i],
+			'inventory_delivery_case' => $this->input->post('delivery')[$i],
+			'inventory_stock_transfer' => $this->input->post('stock_transfer')[$i],
+			'inventory_notes' => $this->input->post('notes')[$i],
+			'inventory_date' => date("Y-m-d H:i:s"),
+			);
 
-		var_dump($data); exit;
+		};
+		
+		$create = $this->model_inventory->insert_batch($data);        	
+    	
+    	if($create) {
+    		print_r($create); exit;
+    		$this->session->set_flashdata('success', 'Successfully created');
+    		redirect('inventory/start_inventory/'.$create, 'refresh');
+    	}
+    	else {
+    		$this->session->set_flashdata('errors', 'Error occurred!!');
+    		redirect('inventory/start_inventory/'.$create, 'refresh');
+    	}
+        // }
+        // else {
+        //     // false case
+        // 	$company = $this->model_company->getCompanyData(1);
+        // 	$this->data['company_data'] = $company;
+        // 	$this->data['is_vat_enabled'] = ($company['vat_charge_value'] > 0) ? true : false;
+        // 	$this->data['is_service_enabled'] = ($company['service_charge_value'] > 0) ? true : false;
 
-        if ($this->form_validation->run() == TRUE) {        	
-        	
-        	$order_id = $this->model_inventory->create();
-        	
-        	// if($order_id) {
-        	// 	$this->session->set_flashdata('success', 'Successfully created');
-        	// 	redirect('orders/update/'.$order_id, 'refresh');
-        	// }
-        	// else {
-        	// 	$this->session->set_flashdata('errors', 'Error occurred!!');
-        	// 	redirect('orders/create/', 'refresh');
-        	// }
-        }
-        else {
-            // false case
-        	$company = $this->model_company->getCompanyData(1);
-        	$this->data['company_data'] = $company;
-        	$this->data['is_vat_enabled'] = ($company['vat_charge_value'] > 0) ? true : false;
-        	$this->data['is_service_enabled'] = ($company['service_charge_value'] > 0) ? true : false;
+        // 	$this->data['products'] = $this->model_products->getActiveProductData();      	
 
-        	$this->data['products'] = $this->model_products->getActiveProductData();      	
-
-            $this->render_template('orders/create', $this->data);
-        }	
+        //     $this->render_template('orders/create', $this->data);
+        // }	
 	}
 
 	/*
@@ -280,54 +283,14 @@ l		$products = $this->model_products->getActiveProductData();
 			redirect('dashboard', 'refresh');
 		}
 
-		$getStoreBranch = $this->model_products->getProduct();
+		$getStoreBranch = $this->model_products->getActiveProductPerStore($id);
 
 		$this->data['page_title'] = 'Start Inventory Count';
 		$this->data['store_branch'] = $getStoreBranch;
 
-
-		// print_r($this->data['page_title']); 
-
-		// $this->form_validation->set_rules('product[]', 'Product name', 'trim|required');
-		
 	
-      //   if ($this->form_validation->run() == TRUE) {        	
-        	
-      //   	$update = $this->model_orders->update($id);
-        	
-      //   	if($update == true) {
-      //   		$this->session->set_flashdata('success', 'Successfully updated');
-      //   		redirect('orders/update/'.$id, 'refresh');
-      //   	}
-      //   	else {
-      //   		$this->session->set_flashdata('errors', 'Error occurred!!');
-      //   		redirect('orders/update/'.$id, 'refresh');
-      //   	}
-      //   }
-      //   else {
-      //       // false case
-      //   	$company = $this->model_company->getCompanyData(1);
-      //   	$this->data['company_data'] = $company;
-      //   	$this->data['is_vat_enabled'] = ($company['vat_charge_value'] > 0) ? true : false;
-      //   	$this->data['is_service_enabled'] = ($company['service_charge_value'] > 0) ? true : false;
-
-      //   	$result = array();
-      //   	$orders_data = $this->model_orders->getOrdersData($id);
-
-    		// $result['order'] = $orders_data;
-    		// $orders_item = $this->model_orders->getOrdersItemData($orders_data['id']);
-
-    		// foreach($orders_item as $k => $v) {
-    		// 	$result['order_item'][] = $v;
-    		// }
-
-    		// $this->data['order_data'] = $result;
-
-      //   	$this->data['products'] = $this->model_products->getActiveProductData();      	
-
-      //   }
 		if ($this->is_mobile()) {
-            $this->render_template('inventory/create_mobile1', $this->data);
+            $this->render_template('inventory/create_mobile', $this->data);
         } else {
             $this->render_template('inventory/create', $this->data);
 		}
@@ -514,8 +477,5 @@ l		$products = $this->model_products->getActiveProductData();
 	// }
 	}
 
-	public function create_data() {
-		var_dump($this->input->post()); exit();
-	}
 
 }

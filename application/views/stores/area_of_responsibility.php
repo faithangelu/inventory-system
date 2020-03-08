@@ -1,4 +1,3 @@
-
 <!-- Example DataTables Card-->
 <div class="card mb-3">
   <div class="card-header">
@@ -7,8 +6,7 @@
         All <?php echo $page_title  ?>
       </div>
       <div class="col-md-4 float-right d-flex justify-content-end">
-        <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
-        <a href="<?php echo base_url('stores/start_inventory') ?>" class="btn-sm btn btn-primary " data-toggle="modal" data-target="#addModal"> Add <?php echo $page_title; ?></a> 
+        <a href="<?php echo base_url('stores/store_details') ?>" class="btn-sm btn btn-primary " data-toggle="modal" data-target="#addModal"> Add Area of Responsibility</a> 
       </div>
     </div>
   </div>
@@ -19,15 +17,13 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Category</th>                        
-            <th>Size</th>                        
+            <th>Area of Responsibility</th>
+            <th>Area of Responsibility Description</th>
+            <th>Status</th>
+            <th>Action</th>                        
           </tr>
         </thead>
         <tbody>
-            <td></td>
-            <td></td>
-            <td></td>
         </tbody>
       </table>
     </div> 
@@ -47,7 +43,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <?php echo form_open(site_url('products/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
+        <?php echo form_open(site_url('stores/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
         <div class="fallback">
           <input name="file" type="file" class="hide" />
         </div>
@@ -61,30 +57,37 @@
   </div>
 </div>
 
-<?php if(in_array('createProduct', $user_permission)): ?>
+<?php if(in_array('createStore', $user_permission)): ?>
 <!-- create brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Store</h4>
+        <h4 class="modal-title">Add Area of Responsibility</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('products/create') ?>" method="post" id="createForm">
+      <form role="form" action="<?php echo base_url('stores/form/add') ?>" method="post" id="createForm">
 
         <div class="modal-body">
-
+          <input type="hidden" name="page" value="<?php echo $this->uri->segment(3) ?>">
           <div class="form-group">
-            <label for="brand_name">Store Name</label>
-            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Enter store name" autocomplete="off">
+            <label for="brand_name">Area of Responsibility</label>
+            <input type="text" class="form-control" id="store_area_of_responsibility_name" name="store_area_of_responsibility_name" placeholder="Enter Area of Responsibility" autocomplete="off">
+            <div id="error-store_area_of_responsibility_name"></div>
+          </div>
+          <div class="form-group">
+            <label for="brand_name">Area of Responsibility Description</label>
+            <input type="text" class="form-control" id="store_area_of_responsibility_description" name="store_area_of_responsibility_description" placeholder="Enter Area of Responsibility Description" autocomplete="off">
+            <div id="error-store_area_of_responsibility_description"></div>
           </div>
           <div class="form-group">
             <label for="active">Status</label>
-            <select class="form-control" id="active" name="active">
-              <option value="1">Active</option>
-              <option value="2">Inactive</option>
+            <select class="form-control" id="store_area_of_responsibility_status" name="store_area_of_responsibility_status">
+              <option value="0">Inactive</option>
+              <option value="1" selected>Active</option>
             </select>
+            <div id="error-store_area_of_responsibility_status"></div>
           </div>
         </div>
 
@@ -101,28 +104,33 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
-<?php if(in_array('updateProduct', $user_permission)): ?>
+<?php if(in_array('updateStore', $user_permission)): ?>
 <!-- edit brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit Store</h4>
+        <h4 class="modal-title">Edit Area of Responsibility  </h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('products/update') ?>" method="post" id="updateForm">
+      <form role="form" action="<?php echo base_url('stores/form/update') ?>" method="post" id="updateForm">
 
         <div class="modal-body">
-          <div id="messages"></div>
-
+          <input type="hidden" name="page" value="<?php echo $this->uri->segment(3) ?>">
           <div class="form-group">
-            <label for="edit_brand_name">Store Name</label>
-            <input type="text" class="form-control" id="edit_store_name" name="edit_store_name" placeholder="Enter store name" autocomplete="off">
+            <label for="edit_brand_name">Area of Responsibility Name</label>
+            <input type="text" class="form-control" id="edit_store_area_of_responsibility_name" name="store_area_of_responsibility_name" placeholder="Enter Area of Responsibility Name" autocomplete="off">
+            <div id="error-store_area_of_responsibility_name"></div>
+          </div>
+          <div class="form-group">
+            <label for="brand_name">Area of Responsibility Description</label>
+            <input type="text" class="form-control" id="edit_store_area_of_responsibility_description" name="store_area_of_responsibility_description" placeholder="Enter Area of Responsibility Description" autocomplete="off">
+            <div id="error-store_area_of_responsibility_description"></div>
           </div>
           <div class="form-group">
             <label for="edit_active">Status</label>
-            <select class="form-control" id="edit_active" name="edit_active">
+            <select class="form-control" id="edit_store_area_of_responsibility_status" name="store_area_of_responsibility_status">
               <option value="0">Inactive</option>
               <option value="1">Active</option>
             </select>
@@ -142,17 +150,17 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
-<?php if(in_array('deleteProduct', $user_permission)): ?>
+<?php if(in_array('deleteStore', $user_permission)): ?>
 <!-- remove brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Remove Store</h4>
+        <h4 class="modal-title">Remove ADP</h4>
       </div>
 
-      <form role="form" action="<?php echo base_url('product/remove') ?>" method="post" id="removeForm">
+      <form role="form" action="<?php echo base_url('stores/form/delete') ?>" method="post" id="removeForm">
         <div class="modal-body">
           <p>Do you really want to remove?</p>
         </div>
@@ -161,6 +169,8 @@
           <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </form>
+
+
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -178,7 +188,7 @@ $(document).ready(function() {
 
   // initialize the datatable 
   manageTable = $('#manageTable').DataTable({
-    'ajax': app_url + 'products/fetchProductData',
+    'ajax': app_url + 'stores/fetch_area_of_responsibility',
     'order': []
   });
 
@@ -195,16 +205,10 @@ $(document).ready(function() {
       data: form.serialize(), // /converting the form data into array and sending it to server
       dataType: 'json',
       success:function(response) {
-
+        
         manageTable.ajax.reload(null, false); 
 
         if(response.success === true) {
-          $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-            '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-          '</div>');
-
-
           // hide the modal
           $("#addModal").modal('hide');
 
@@ -214,23 +218,12 @@ $(document).ready(function() {
 
         } else {
 
-          if(response.messages instanceof Object) {
-            $.each(response.messages, function(index, value) {
-              var id = $("#"+index);
-
-              id.closest('.form-group')
-              .removeClass('has-error')
-              .removeClass('has-success')
-              .addClass(value.length > 0 ? 'has-error' : 'has-success');
-              
-              id.after(value);
-
-            });
-          } else {
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>');
+          // displays individual error messages
+          if (response.errors) {
+            for (var form_name in response.errors) {
+              $('#error-' + form_name).html(response.errors[form_name]);
+              // console.log(response.errors[form_name]);
+            }
           }
         }
       }
@@ -245,13 +238,14 @@ $(document).ready(function() {
 function editFunc(id)
 { 
   $.ajax({
-    url: app_url + 'products/fetchStoresDataById/'+id,
+    url: app_url + 'stores/fetch_area_of_responsibility_user/'+id,
     type: 'post',
     dataType: 'json',
     success:function(response) {
-
-      $("#edit_store_name").val(response.name);
-      $("#edit_active").val(response.active);
+      console.log(response);
+      $("#edit_store_area_of_responsibility_name").val(response.store_area_of_responsibility_name);
+      $("#edit_store_area_of_responsibility_description").val(response.store_area_of_responsibility_description);
+      $("#edit_store_area_of_responsibility_status").val(response.store_area_of_responsibility_status);
 
       // submit the edit from 
       $("#updateForm").unbind('submit').bind('submit', function() {
@@ -270,11 +264,6 @@ function editFunc(id)
             manageTable.ajax.reload(null, false); 
 
             if(response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
-
 
               // hide the modal
               $("#editModal").modal('hide');
@@ -296,10 +285,14 @@ function editFunc(id)
 
                 });
               } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
+                 // displays individual error messages
+                  if (response.errors) {
+                    for (var form_name in response.errors) {
+                      $('#error-' + form_name).html(response.errors[form_name]);
+                      // console.log(response.errors[form_name]);
+                    }
+                  }
+
               }
             }
           }
@@ -326,7 +319,7 @@ function removeFunc(id)
       $.ajax({
         url: form.attr('action'),
         type: form.attr('method'),
-        data: { product_id:id }, 
+        data: { adp_id:id }, 
         dataType: 'json',
         success:function(response) {
 

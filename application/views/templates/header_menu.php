@@ -13,7 +13,7 @@
           </a>
         </li>
         
-        <?php if ($user_permission) : ?>     
+        <?php if ($user_permission) : ?>    
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
             <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMerchandise" data-parent="#exampleAccordion">
               <i class="fa fa-fw fa-suitcase"></i>
@@ -22,9 +22,24 @@
             <ul class="sidenav-second-level collapse" id="collapseMerchandise">
               <?php if(in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
                 <li id="storeNav">
-                  <a href="<?php echo base_url('stores') ?>">
-                    <i class="fa fa-shopping-cart"></i> | <span>Stores</span>
+                  <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" >
+                    <i class="fas fa-dolly"></i> | <span>Flat file</span>
                   </a>
+                  <ul class="sidenav-second-level collapse" id="collapseComponents">
+                    <li>
+                      <a href="<?php echo base_url('stores/store_details/area_of_responsibility') ?>">Area of Responsibility</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('stores/store_details/area_distributed_partner') ?>">Area Distributed Partner</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('stores/') ?>">Account Name Branch</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('brands') ?>">
+                      <i class="fa fa-barcode"></i> | <span>Brands</span></a>
+                    </li>      
+                  </ul>
                 </li>
               <?php endif; ?>
 
@@ -35,13 +50,6 @@
                   </a>
                 </li>   
               <?php endif; ?>
-              
-              <?php if(in_array('createBrand', $user_permission) || in_array('updateBrand', $user_permission) || in_array('viewBrand', $user_permission) || in_array('deleteBrand', $user_permission)): ?>
-                <li>
-                  <a href="<?php echo base_url('brands') ?>">
-                  <i class="fa fa-barcode"></i> | <span>Brands</span></a>
-                </li>      
-              <?php endif; ?> 
 
               <?php if(in_array('createCategory', $user_permission) || in_array('updateCategory', $user_permission) || in_array('viewCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
                 <li >
@@ -61,7 +69,12 @@
             <ul class="sidenav-second-level collapse" id="collapseInventory">
               <li>
                 <a href="<?php echo base_url('inventory') ?>"> 
-                   <i class="fa fa-copy"></i> | <span>Inventory Count</span>
+                   <i class="fas fa-clipboard-check"></i> | <span>CSL</span>
+                </a>
+              </li>  
+              <li>
+                <a href="<?php echo base_url('inventory') ?>"> 
+                   <i class="fas fa-clipboard-list"></i> | <span>Inventory Count</span>
                 </a>
               </li>            
             </ul>
@@ -71,7 +84,7 @@
           <?php if (in_array('viewReports', $user_permission)) : ?>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Reports">
               <a class="nav-link" href="<?php echo base_url('reports') ?>">
-                <i class="fa fa-fw fa-bar-chart-o"></i>
+                <i class="fas fa-chart-line"></i>
                 <span class="nav-link-text">Reports</span>
               </a>
             </li>
@@ -86,11 +99,11 @@
               </a>
               <ul class="sidenav-second-level collapse" id="collapseSettings">
                 <li>
-                  <a href="<?php echo base_url('users') ?>">Users</a>
+                  <a href="<?php echo base_url('users') ?>"><i class="fas fa-users"></i> | Users</a>
                 </li>
                 <?php if(in_array('createGroup', $user_permission) || in_array('updateGroup', $user_permission) || in_array('viewGroup', $user_permission) || in_array('deleteGroup', $user_permission)): ?>
                 <li>
-                  <a href="<?php echo base_url('groups') ?>">Roles</a>
+                  <a href="<?php echo base_url('groups') ?>"><i class="fas fa-user-lock"></i> | Roles</a>
                 </li>
                 <?php endif; ?>
               </ul>

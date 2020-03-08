@@ -98,7 +98,7 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
-<?php if(in_array('updateStore', $user_permission)): ?>
+<?php if(in_array('updateProduct', $user_permission)): ?>
 <!-- edit brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
   <div class="modal-dialog" role="document">
@@ -139,7 +139,7 @@
 </div><!-- /.modal -->
 <?php endif; ?>
 
-<?php if(in_array('deleteStore', $user_permission)): ?>
+<?php if(in_array('deleteProduct', $user_permission)): ?>
 <!-- remove brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
   <div class="modal-dialog" role="document">

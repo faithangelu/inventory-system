@@ -10,7 +10,7 @@ class Model_products extends CI_Model
 	/* get the all brand */
 	public function getProduct()
 	{
-		$sql = "SELECT * FROM products ORDER BY product_id DESC";
+		$sql = "SELECT * FROM products WHERE product_deleted = 0 ";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
@@ -70,7 +70,7 @@ class Model_products extends CI_Model
 	{
 		if($id) {
 			$this->db->where('product_id', $id);
-			$delete = $this->db->delete('products');
+			$delete = $this->db->update('products', array('product_deleted', 1));
 			return ($delete == true) ? true : false;
 		}
 	}

@@ -1,81 +1,3 @@
-x<?php /**
-
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      Manage
-      <small>Category</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Category</li>
-    </ol>
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-    <!-- Small boxes (Stat box) -->
-    <div class="row">
-      <div class="col-md-12 col-xs-12">
-
-        <div id="messages"></div>
-
-        <?php if($this->session->flashdata('success')): ?>
-          <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('success'); ?>
-          </div>
-        <?php elseif($this->session->flashdata('error')): ?>
-          <div class="alert alert-error alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if(in_array('createCategory', $user_permission)): ?>
-          <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Category</button>
-          <br /> <br />
-        <?php endif; ?>
-
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">Manage Categories</h3>
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body">
-            <table id="manageTable" class="table table-bordered table-striped">
-              <thead>
-              <tr>
-                <th>Category Name</th>
-                <th>Status</th>
-                <?php if(in_array('updateCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
-                  <th>Action</th>
-                <?php endif; ?>
-              </tr>
-              </thead>
-
-            </table>
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
-      </div>
-      <!-- col-md-12 -->
-    </div>
-    <!-- /.row -->
-    
-
-  </section>
-  <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-
-
-
-*/ ?>
-
 <div class="card mb-3">
     <div class="card-header">
         <div class="row">
@@ -83,7 +5,7 @@ x<?php /**
                 <i class="fa fa-table"></i> <?php echo $page_title ?>                
             </div>
             <div class="col-md-4 float-right d-flex justify-content-end">
-                <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
+                <!-- <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button> -->
                 <?php if(in_array('createCategory', $user_permission)): ?>
                   <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">Add <?php echo $page_title; ?></button>
                   <br /> 
@@ -151,30 +73,6 @@ x<?php /**
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php endif; ?>
-
-<div class="modal fade" id="file_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <?php echo form_open(site_url('category/file_import'), array('class'=>'dropzone', 'id'=>'dropzone')); ?>
-        <div class="fallback">
-          <input name="file" type="file" class="hide" />
-        </div>
-        <?php echo form_close(); ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php if(in_array('updateCategory', $user_permission)): ?>
 <!-- edit brand modal -->

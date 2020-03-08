@@ -64,7 +64,7 @@ class Stores extends Admin_Controller
 	{
 		$result = array('data' => array());
 
-		$data = $this->model_stores->getStoresData();
+		$data = $this->model_stores->getStores();
 
 		foreach ($data as $key => $value) {
 
@@ -300,9 +300,6 @@ class Stores extends Admin_Controller
 						}
 					}
 
-					// $this->model_stores->create($batch_data);
-				// echo $this->db->last_query();
-
 					if (! ($status = $this->model_stores->insert_batch($batch_data))) {
 						echo json_encode(array('success' => false, 'message' => 'Error occured. Unable to import the data. Please try again.')); exit;
 
@@ -314,33 +311,6 @@ class Stores extends Admin_Controller
 			}
 			
 		}	
-		// if(!in_array('fileImportStore', $this->permission)) {
-		// 	redirect('dashboard', 'refresh');
-		// }
-		
-		// $store_id = $this->input->post('store_id');
-
-		// $response = array();
-		// if($store_id) {
-		// 	$delete = $this->model_stores->remove($store_id);
-		// 	if($delete == true) {
-		// 		$response['success'] = true;
-		// 		$response['messages'] = "Successfully removed";	
-		// 	}
-		// 	else {
-		// 		$response['success'] = false;
-		// 		$response['messages'] = "Error in the database while removing the brand information";
-		// 	}
-		// }
-		// else {
-		// 	$response['success'] = false;
-		// 	$response['messages'] = "Refersh the page again!!";
-		// }
-
-		// echo json_encode($response);
-
-		// var_dump($this->input->post());
-
 		
 	}
 
@@ -357,5 +327,285 @@ class Stores extends Admin_Controller
 		$this->render_template('stores/products_per_store', $this->data);	
 	}
 
+	public function store_details($param = FALSE, $id = FALSE) {
+		$this->data['page_title'] = ucwords(str_replace("_", " ", $param));
 
+		if ($param == 'area_of_responsibility') {
+			$this->data[' . $param . '] = $this->model_stores->get_area_of_responsibility();
+		} 
+		else if ($param == 'area_distributed_partner') {
+			$this->data['area_of_responsibility'] = $this->model_stores->get_area_of_responsibility();
+			$this->data[' . $param . '] = $this->model_stores->get_area_distributed_partner();	
+		} 
+		else if ($param == 'area_distributed_partners_per_store') {
+			$this->data[' . $param . '] = $this->model_stores->get_area_distributed_partners_per_store($id);	
+		} 
+
+		$this->render_template('stores/' . $param, $this->data);	
+	}
+
+	public function fetch_area_of_responsibility() {
+		$result = array('data' => array());
+
+		$data = $this->model_stores->get_area_of_responsibility();
+
+		foreach ($data as $key => $value) {
+
+			// button
+			$buttons = '';
+
+			// $buttons = '';
+
+			if(in_array('updateStore', $this->permission)) {
+				$buttons = '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc('.$value['store_area_of_responsibility_id'].')" data-toggle="modal" data-target="#editModal" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></button> <a type="button" class="btn btn-info btn-sm" href="' . base_url('stores/store_details/area_distributed_partners_per_store/' . $value['store_area_of_responsibility_id']) . '" data-toggle="tooltip" title="Area Distributed Partners"><i class="fas fa-code-branch"></i></a>';
+			}
+
+			if(in_array('deleteStore', $this->permission)) {
+				$buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc('.$value['store_area_of_responsibility_id'].')" data-toggle="modal" data-target="#removeModal" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></button>';
+			}
+
+			$status = ($value['store_area_of_responsibility_status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+
+			$result['data'][$key] = array(
+				$value['store_area_of_responsibility_id'],
+				$value['store_area_of_responsibility_name'],
+				$value['store_area_of_responsibility_description'],
+				$status,
+				$buttons
+			);
+		} // /foreach
+
+		echo json_encode($result);
+	}
+
+	public function fetch_area_distributed_partner() 
+	{
+		$result = array('data' => array());
+
+		$data = $this->model_stores->get_area_distributed_partner();
+
+		foreach ($data as $key => $value) {
+
+			// button
+			$buttons = '';
+
+			// $buttons = '';
+
+			if(in_array('updateStore', $this->permission)) {
+				$buttons = '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#editModal" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></button>
+					';
+			}
+
+			if(in_array('deleteStore', $this->permission)) {
+				$buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#removeModal" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></button>';
+			}
+
+			$status = ($value['store_area_distributed_partner_status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+
+			$result['data'][$key] = array(
+				$value['store_area_distributed_partner_id'],
+				$value['store_area_distributed_partner_name'],
+				$status,
+				$buttons
+			);
+		} // /foreach
+
+		echo json_encode($result);
+	}
+	
+	public function fetch_area_distributed_partners_per_store() 
+	{
+		$result = array('data' => array());
+
+		$data = $this->model_stores->get_area_distributed_partner();
+
+		foreach ($data as $key => $value) {
+
+			// button
+			$buttons = '';
+
+			// $buttons = '';
+
+			if(in_array('updateStore', $this->permission)) {
+				$buttons = '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#editModal" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></button>
+					';
+			}
+
+			if(in_array('deleteStore', $this->permission)) {
+				$buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#removeModal" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></button>';
+			}
+
+			$status = ($value['store_area_distributed_partner_status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+
+			$result['data'][$key] = array(
+				$value['store_area_distributed_partner_id'],
+				$value['store_area_distributed_partner_name'],
+				$status,
+				$buttons
+			);
+		} // /foreach
+
+		echo json_encode($result);
+	}
+
+	public function get_area_distributed_partners_per_store() 
+	{
+		$result = array('data' => array());
+
+		$data = $this->model_stores->get_area_distributed_partners_per_store();
+
+		foreach ($data as $key => $value) {
+
+			// button
+			$buttons = '';
+
+			// $buttons = '';
+
+			if(in_array('updateStore', $this->permission)) {
+				$buttons = '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#editModal" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></button>
+					';
+			}
+
+			if(in_array('deleteStore', $this->permission)) {
+				$buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc('.$value['store_area_distributed_partner_id'].')" data-toggle="modal" data-target="#removeModal" data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></button>';
+			}
+
+			$status = ($value['store_area_distributed_partner_status'] == 1) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+
+			$result['data'][$key] = array(
+				$value['store_area_distributed_partner_id'],
+				$value['store_area_distributed_partner_name'],
+				$status,
+				$buttons
+			);
+		} // /foreach
+
+		echo json_encode($result);
+	}
+
+
+	public function fetch_area_of_responsibility_user($id) 
+	{
+		if($id) {
+			$data = $this->model_stores->get_area_of_responsibility_name($id);
+			echo json_encode($data); 
+		}
+	}
+
+	public function form($action = 'add', $id = FALSE) {
+		
+		if ($this->input->post())
+		{
+			if ($this->_save($action, $id))
+			{
+				echo json_encode(array('success' => true, 'message' => 'Saved Successfully')); exit;
+			}
+			else
+			{	
+				if ($this->input->post('page') == 'area_of_responsibility') 
+				{
+					$response['success'] = FALSE;
+					$response['message'] = 'Please complete the following fields';
+					$response['errors'] = array(					
+						'store_area_of_responsibility_name' => form_error('store_area_of_responsibility_name'),
+						'store_area_of_responsibility_description' => form_error('store_area_of_responsibility_description'),
+						'store_area_of_responsibility_status' => form_error('store_area_of_responsibility_status'),
+					);
+					echo json_encode($response);
+					exit;
+				}
+				else if ($this->input->post('page') == 'area_distributed_partner') 
+				{
+					$response['success'] = FALSE;
+					$response['message'] = 'Please complete the following fields';
+					$response['errors'] = array(					
+						'store_area_distributed_partner_name' => form_error('store_area_distributed_partner_name'),
+						'store_area_distributed_partner_status' => form_error('store_area_distributed_partner_status'),
+					);
+					echo json_encode($response);
+					exit;
+				}
+			}
+		}
+
+
+	}
+
+	private function _save($action = 'add', $id = 0) {
+		// var_dump($this->input->post()); exit;
+		if ($this->input->post('page') == 'area_of_responsibility') {
+			$this->form_validation->set_rules('store_area_of_responsibility_name', 'Area of Responsibility', 'trim|required');
+			$this->form_validation->set_rules('store_area_of_responsibility_description', 'Area of Responsibility Description', 'trim|required');
+			$this->form_validation->set_rules('store_area_of_responsibility_status', 'Status', 'trim|required');
+
+			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+			if ($this->form_validation->run() == FALSE) {
+				return FALSE;
+			}
+
+			$data = array(
+				'store_area_of_responsibility_name' => $this->input->post('store_area_of_responsibility_name'),
+				'store_area_of_responsibility_description' => $this->input->post('store_area_of_responsibility_description'),
+				'store_area_of_responsibility_status' => $this->input->post('store_area_of_responsibility_status'),	
+				'store_area_of_responsibility_deleted' => 0,	
+			);
+
+			if ($action == 'add')
+			{
+				$return = $this->model_stores->area_of_responsibility_create($data);
+			}
+			else if ($action == 'update')
+			{
+				$return = $this->model_stores->area_of_responsibility_update($id, $data);
+			} 
+			else if($action == 'delete') 
+			{
+				$return = $this->model_stores->area_of_responsibility_remove($id);
+			}
+
+			return $return;
+		} 
+		else if ($this->input->post('page') == 'area_distributed_partner') 
+		{
+			$this->form_validation->set_rules('store_area_distributed_partner_name', 'Area Distributed Partner', 'trim|required');
+			$this->form_validation->set_rules('store_area_distributed_partner_description', 'Area Distributed Partner Description', 'trim|required');
+			$this->form_validation->set_rules('store_area_distributed_partner_status', 'Status', 'trim|required');
+
+			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+			if ($this->form_validation->run() == FALSE) {
+				return FALSE;
+			}
+
+			$data = array(
+				'store_area_distributed_partner_name' => $this->input->post('store_area_distributed_partner_name'),
+				'store_area_distributed_partner_description' => $this->input->post('store_area_distributed_partner_description'),
+				'store_area_distributed_partner_status' => $this->input->post('store_area_distributed_partner_status'),	
+				'store_area_distributed_partner_deleted' => 0,	
+			);
+
+			if ($action == 'add')
+			{
+				$return = $this->model_stores->area_distributed_partner_create($data);
+			}
+			else if ($action == 'update')
+			{
+				$return = $this->model_stores->area_distributed_partner_update($id, $data);
+			} 
+			else if($action == 'delete') 
+			{
+				$return = $this->model_stores->area_distributed_partner_remove($id);
+			}
+
+			return $return;
+		}
+
+		
+
+	}
+
+
+
+	
 }

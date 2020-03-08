@@ -31,7 +31,7 @@
         } ?>     </span>
         <form action="<?php echo base_url('auth/login') ?>" method="post">
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
+            <label for="exampleInputEmail1">Email address/Username</label>
             <input type="email" class="form-control" name="email" id="email" placeholder="Email" autocomplete="off">
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
@@ -48,10 +48,10 @@
           </div>
           <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
         </form>
-        <div class="text-center">
-          <a class="d-block small mt-3" href="register.html">Register an Account</a>
-          <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
-        </div>
+        <!-- <div class="text-center"> -->
+          <!-- <a class="d-block small mt-3" href="register.html">Register an Account</a> -->
+          <!-- <a class="d-block small" href="forgot-password.html">Forgot Password?</a> -->
+        <!-- </div> -->
       </div>
     </div>
   </div>

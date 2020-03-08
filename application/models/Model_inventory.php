@@ -29,29 +29,30 @@ class Model_inventory extends CI_Model
 		return $query->result_array();
 	}
 
-	public function create($data)
+
+	// public function update($data, $id)
+	// {
+	// 	if($data && $id) {
+	// 		$this->db->where('inventory_id', $id);
+	// 		$update = $this->db->update('brands', $data);
+	// 		return ($update == true) ? true : false;
+	// 	}
+	// }
+
+	// public function remove($id)
+	// {
+	// 	if($id) {
+	// 		$this->db->where('inventory_id', $id);
+	// 		$delete = $this->db->delete('brands');
+	// 		return ($delete == true) ? true : false;
+	// 	}
+	// }
+
+	public function insert_batch($data)
 	{
 		if($data) {
-			$insert = $this->db->insert('inventory', $data);
+			$insert = $this->db->insert_batch('inventory', $data);
 			return ($insert == true) ? true : false;
-		}
-	}
-
-	public function update($data, $id)
-	{
-		if($data && $id) {
-			$this->db->where('id', $id);
-			$update = $this->db->update('brands', $data);
-			return ($update == true) ? true : false;
-		}
-	}
-
-	public function remove($id)
-	{
-		if($id) {
-			$this->db->where('id', $id);
-			$delete = $this->db->delete('brands');
-			return ($delete == true) ? true : false;
 		}
 	}
 

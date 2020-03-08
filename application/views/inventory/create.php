@@ -1,16 +1,16 @@
-<!-- <div class="card mb-3">
+<div class="card mb-3">
   <div class="card-header">
   <i class="fa fa-table"></i> Users List 
   </div>
-  <div class="card-body"> -->
+  <div class="card-body">
 
+    <form id="form-data-inventory" role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
     <div class="table-responsive">    
-      <form id="form-data-inventory" role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
   
-      <table class="table table-bordered" width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0" id="dataTable">
         <thead>
           <tr class="title-inputs">
-            <th class="fixed-side">Name</th>
+            <th>Name</th>
             <th>OSP</th>
             <th>WHSE Case</th>
             <th>S/A Case</th>
@@ -20,48 +20,50 @@
           </tr>
         </thead>        
         <tbody>
-            <?php if($store_branch): ?>                  
-                 
-            <?php foreach ($store_branch as $k => $v): ?>
-              <tr class="inputs-inputs">
-                <td><?php echo $v['product_name']; ?></td>
-                <td><input type="text" name="osp[]" class="form-control"></td>
-                <td><input type="text" name="warehouse[]" class="form-control"></td>
-                <td><input type="text" name="selling_area[]" class="form-control"></td>
-                <td><input type="text" name="delivery[]" class="form-control"></td>
-                <td><input type="text" name="stock_tansfer[]" class="form-control"></td>
-                <td><input type="text" name="note" class="form-control"></td>             
-    
-              </tr>              
-            <?php endforeach ?>
-            <?php endif; ?>
-           <!--  <tr class="button-inputs">
-              <td></td> -->
-              <!-- <td class="col-xs-6 d-none"><input type="text" id="row-1-age" name="row-1-age" value="61" class="form-control"></td> -->
-              <!-- <td class=""><button>Send</button></td>
-              <td class="d-none"><button>Send</button></td>
-              <td class="d-none"><button>Send</button></td>
-              <td class="d-none"><button>Send</button></td>
-              <td class="d-none"><button>Send</button></td>
-              <td class="d-none"><button>Send</button></td>
-            </tr>    -->
+          <?php if($store_branch): ?>                  
+               
+          <?php foreach ($store_branch as $k => $v):?>
+            <tr class="inputs-inputs">
+              <td><input type="hidden" name="product_id[]" class="form-control" value="<?php echo $v->product_id ?>"><?php echo $v->product_name; ?></td>
+              <td><input type="text" name="osp[]" class="form-control"></td>
+              <td><input type="text" name="warehouse[]" class="form-control"></td>
+              <td><input type="text" name="selling_area[]" class="form-control"></td>
+              <td><input type="text" name="delivery[]" class="form-control"></td>
+              <td><input type="text" name="stock_tansfer[]" class="form-control"></td>
+              <td><input type="text" name="notes[]" class="form-control"></td>             
+  
+            </tr>              
+          <?php endforeach ?>
+
+          <?php endif; ?>
         </tbody>
       </table>
-      <button type="submit" name="submit" id="btn-inventory" class="btn btn-primary btn-sm">Submit</button>     
-    </form> 
+      <!-- <button type="submit" name="submit" id="btn-inventory" class="btn btn-primary btn-sm">Submit</button>      -->
     </div>
-  <!-- </div>
+    </form> 
+  </div>
   <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-</div> -->
+</div>
 
 <script type="text/javascript"> var app_url = "<?php echo base_url(); ?>"</script>
 <script type="text/javascript">
 
-    // $('#btn-inventory').click(function(e) {
-    //   e.preventDefault(); 
-    //   $('tr').find('th:nth-child(3), td:nth-child(3)').removeClass('d-none');
-    //   console.log();
-    // }) 
+  $(document).ready(function() {
+    $('#dataTable').DataTable( {
+       "paging": false,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                text: 'Submit Inventory',
+                action: function ( e, dt, node, config ) {
+                    $('.form-data-inventory').submt();
+                }
+            }
+        ]
+    } );
+
+    $('.dt-button').addClass('btn btn')
+} );
 
     $('#form-data-inventory').submit( function(e) {
         e.preventDefault();
