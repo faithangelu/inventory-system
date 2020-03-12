@@ -14,34 +14,33 @@
         </li>
         
         <?php if ($user_permission) : ?>    
-          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
+          <?php if(in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
             <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMerchandise" data-parent="#exampleAccordion">
               <i class="fa fa-fw fa-suitcase"></i>
               <span class="nav-link-text">Trade</span>
             </a>
             <ul class="sidenav-second-level collapse" id="collapseMerchandise">
-              <?php if(in_array('createStore', $user_permission) || in_array('updateStore', $user_permission) || in_array('viewStore', $user_permission) || in_array('deleteStore', $user_permission)): ?>
                 <li id="storeNav">
                   <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" >
                     <i class="fas fa-dolly"></i> | <span>Flat file</span>
                   </a>
                   <ul class="sidenav-second-level collapse" id="collapseComponents">
                     <li>
-                      <a href="<?php echo base_url('stores/store_details/area_of_responsibility') ?>">Area of Responsibility</a>
+                      <a href="<?php echo base_url('store_details/area-of-responsibility') ?>">Area of Responsibility</a>
                     </li>
                     <li>
-                      <a href="<?php echo base_url('stores/store_details/area_distributed_partner') ?>">Area Distributed Partner</a>
+                      <a href="<?php echo base_url('store_details/area-distributed-partner') ?>">Area Distributed Partner</a>
                     </li>
                     <li>
-                      <a href="<?php echo base_url('stores/') ?>">Account Name Branch</a>
-                    </li>
+                      <a href="<?php echo base_url('store_details/account-name-branch') ?>">Account Name Branch</a>
+                    </li>   
                     <li>
-                      <a href="<?php echo base_url('brands') ?>">
-                      <i class="fa fa-barcode"></i> | <span>Brands</span></a>
-                    </li>      
+                      <a href="<?php echo base_url('store_details/stock-keeping-unit') ?>">Stock Keeping Unit</a>
+                    </li>   
                   </ul>
                 </li>
-              <?php endif; ?>
+              
 
               <?php if(in_array('createProduct', $user_permission) || in_array('updateProduct', $user_permission) || in_array('viewProduct', $user_permission) || in_array('deleteProduct', $user_permission)): ?>
                 <li>
@@ -60,7 +59,9 @@
               <?php endif; ?>     
             </ul>
           </li>
+          <?php endif; ?>
 
+          <?php if(in_array('createInventory', $user_permission) || in_array('updateInventory', $user_permission) || in_array('viewInventory', $user_permission) || in_array('deleteStore', $user_permission)): ?>
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inventory">
             <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseInventory" data-parent="#exampleAccordion">
               <i class="fa fa-fw fa-cubes"></i>
@@ -79,7 +80,7 @@
               </li>            
             </ul>
           </li>
-        
+          <?php endif; ?>
        
           <?php if (in_array('viewReports', $user_permission)) : ?>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Reports">
@@ -110,12 +111,14 @@
             </li>
           <?php endif; ?>
             
+          <?php if(in_array('createCompany', $user_permission) || in_array('updateCompany', $user_permission) || in_array('viewCompany', $user_permission) || in_array('deleteGroup', $user_permission)): ?>  
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
             <a class="nav-link" href="#">
               <i class="fa fa-fw fa-link"></i>
               <span class="nav-link-text">Company</span>
             </a>
           </li>
+          <?php endif; ?>
         <?php endif; ?>
       </ul>
 

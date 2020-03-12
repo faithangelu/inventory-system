@@ -123,13 +123,6 @@
                         <td> - </td>
                       </tr>
                       <tr>
-                        <!--<td>Company</td>
-                        <td> - </td>
-                        <td><input type="checkbox" name="permission[]" id="permission" value="updateCompany" class="minimal"></td>-->
-                        <td> - </td>
-                        <td> - </td>
-                      </tr>
-                      <tr>
                         <td>Profile</td>
                         <td> - </td>
                         <td> - </td>

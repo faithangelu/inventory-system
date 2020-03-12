@@ -50,5 +50,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'auth/login';
+$route['store_details/(area-of-responsibility|area-distributed-partner|area-distributed-partners-per-store)'] = 'store_details/view/$1';
+$route['store_details/(area-of-responsibility|area-distributed-partner|area-distributed-partners-per-store)/(:any)'] = 'store_details/view/$1/$2';
+
+$route['store_details/account-name-branch'] = 'stores'; 
+$route['store_details/stock-keeping-unit'] = 'products'; 
+
+$route['default_controller'] = 'auth/login';
+$route['default_controller'] = 'auth/login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

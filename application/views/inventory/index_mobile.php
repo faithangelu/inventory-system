@@ -28,10 +28,10 @@
                                 <td><?php echo $v->store_branch_store_id; ?></td>
                                 <td><?php echo $v->store_name; ?></td>
                                 <td>
-                                    <?php if (in_array('updateUser', $user_permission)) : ?>
+                                    <?php if (in_array('updateInventory', $user_permission)) : ?>
                                     <a href="<?php echo base_url('inventory/start_inventory/' . $v->store_branch_store_id) ?>" tooltip-toggle="tooltip" data-placement="top" title="Start Inventory" class="btn btn-sm btn-warning"><i class="fa fa-fw fa-file-text-o"></i></a>
                                     <?php endif; ?>
-                                    <?php if (in_array('deleteUser', $user_permission)) : ?>
+                                    <?php if (in_array('deleteInventory', $user_permission)) : ?>
                                     <a href="<?php echo base_url('inventory/delete/' . $v->store_branch_store_id) ?>" data-toggle="modal" data-target="#modal" tooltip-toggle="tooltip" data-placement="top" title="Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>

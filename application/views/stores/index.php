@@ -29,7 +29,7 @@
     </div> 
   </div>
 
-  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+  <div class="card-footer small text-muted">Updated on <?php echo $updated_date . ' by ' . $updated_user; ?></div>
 </div>
 
 
@@ -67,20 +67,22 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/create') ?>" method="post" id="createForm">
+      <form role="form" action="<?php echo base_url('stores/form/add') ?>" method="post" id="createForm">
 
         <div class="modal-body">
 
           <div class="form-group">
             <label for="brand_name">Store Name</label>
-            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Enter store name" autocomplete="off">
+            <input type="text" class="form-control" id="store_name" name="store_name" placeholder="Name" autocomplete="off">
+            <div id="error-store_name"></div>
           </div>
           <div class="form-group">
             <label for="active">Status</label>
-            <select class="form-control" id="active" name="active">
-              <option value="1">Active</option>
+            <select class="form-control" id="store_status" name="store_status">
+              <option value="1" selected>Active</option>
               <option value="2">Inactive</option>
             </select>
+            <div id="error-store_status"></div>
           </div>
         </div>
 
@@ -107,21 +109,22 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/update') ?>" method="post" id="updateForm">
+      <form role="form" action="<?php echo base_url('stores/form/update') ?>" method="post" id="updateForm">
 
         <div class="modal-body">
           <div id="messages"></div>
 
           <div class="form-group">
             <label for="edit_brand_name">Store Name</label>
-            <input type="text" class="form-control" id="edit_store_name" name="edit_store_name" placeholder="Enter store name" autocomplete="off">
+            <input type="text" class="form-control" id="edit_store_name" name="edit_store_name" placeholder="Name" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="edit_active">Status</label>
-            <select class="form-control" id="edit_active" name="edit_active">
+            <select class="form-control" id="edit_store_status" name="store_status">
               <option value="0">Inactive</option>
               <option value="1">Active</option>
             </select>
+            <div id="error-store_status"></div>
           </div>
         </div>
 
@@ -212,24 +215,14 @@ $(document).ready(function() {
 
         } else {
 
-          if(response.messages instanceof Object) {
-            $.each(response.messages, function(index, value) {
-              var id = $("#"+index);
-
-              id.closest('.form-group')
-              .removeClass('has-error')
-              .removeClass('has-success')
-              .addClass(value.length > 0 ? 'has-error' : 'has-success');
-              
-              id.after(value);
-
-            });
-          } else {
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>');
+          // displays individual error messages
+          if (response.errors) {
+            for (var form_name in response.errors) {
+              $('#error-' + form_name).html(response.errors[form_name]);
+              // console.log(response.errors[form_name]);
+            }
           }
+        
         }
       }
     }); 
@@ -248,8 +241,8 @@ function editFunc(id)
     dataType: 'json',
     success:function(response) {
 
-      $("#edit_store_name").val(response.name);
-      $("#edit_active").val(response.active);
+      $("#edit_store_name").val(response.store_name);
+      $("#edit_store_status").val(response.store_status);
 
       // submit the edit from 
       $("#updateForm").unbind('submit').bind('submit', function() {

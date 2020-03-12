@@ -86,7 +86,7 @@ class Groups extends Admin_Controller
 
 		if($id) {
 
-			$modules = array( 'User','Report', 'Order', 'Group', 'Brand', 'Category', 'Store', 'Product', 'Profile', 'Setting');
+			$modules = array( 'User','Report', 'Order', 'Group', 'Brand', 'Category', 'Store', 'Inventory' , 'Product', 'Profile', 'Setting');
 
 			$result = array();
 			foreach ($modules as $k => $v) {
@@ -103,7 +103,7 @@ class Groups extends Admin_Controller
 	            
 	        	$data = array(
 	        		'group_name' => $this->input->post('group_name'),
-	        		'permission' => $permission
+	        		'group_permission' => $permission
 				);
 				
 	        	$update = $this->model_groups->edit($data, $id);

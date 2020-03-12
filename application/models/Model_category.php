@@ -8,9 +8,9 @@ class Model_category extends CI_Model
 	}
 
 	/* get active brand infromation */
-	public function getActiveCategroy()
+	public function getActiveCategory()
 	{
-		$sql = "SELECT * FROM category WHERE active = ?";
+		$sql = "SELECT * FROM category WHERE category_status = ?";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}
@@ -19,7 +19,7 @@ class Model_category extends CI_Model
 	public function getCategoryData($id = null)
 	{
 		if($id) {
-			$sql = "SELECT * FROM category WHERE id = ?";
+			$sql = "SELECT * FROM category WHERE category_id = ?";
 			$query = $this->db->query($sql, array($id));
 			return $query->row_array();
 		}

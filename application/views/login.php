@@ -24,8 +24,6 @@
       <img src="<?php echo base_url(); ?>/assets/images/logo.png"/>
     </div>     
       <div class="card-body">   
-        <span class="text-danger" ><?php echo validation_errors(); ?>  </span>
-
         <span class="text-danger" ><?php if(!empty($errors)) {
           echo $errors;
         } ?>     </span>
@@ -34,11 +32,13 @@
             <label for="exampleInputEmail1">Email address/Username</label>
             <input type="email" class="form-control" name="email" id="email" placeholder="Email" autocomplete="off">
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            <?php echo form_error('email', '<div class="text-danger">', '</div>'); ?>
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="off">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            <?php echo form_error('password', '<div class="text-danger">', '</div>'); ?>
           </div>
           <div class="form-group">
             <div class="form-check">

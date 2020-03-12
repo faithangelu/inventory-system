@@ -21,9 +21,7 @@
                   <tr>
                     <th>Category Name</th>
                     <th>Status</th>
-                    <?php if(in_array('updateCategory', $user_permission) || in_array('deleteCategory', $user_permission)): ?>
-                      <th>Action</th>
-                    <?php endif; ?>
+                    <th>Action</th>                    
                   </tr>
                 </thead>
                 <tbody>
@@ -44,20 +42,22 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('category/create') ?>" method="post" id="createForm">
+      <form role="form" action="<?php echo base_url('category/form/add') ?>" method="post" id="createForm">
 
         <div class="modal-body">
 
           <div class="form-group">
             <label for="brand_name">Category Name</label>
             <input type="text" class="form-control" id="category_name" name="category_name" placeholder="Enter category name" autocomplete="off">
+            <div id="error-category_name"></div>
           </div>
           <div class="form-group">
             <label for="active">Status</label>
             <select class="form-control" id="active" name="active">
-              <option value="1">Active</option>
-              <option value="2">Inactive</option>
+              <option value="0">Inactive</option>
+              <option value="1" selected>Active</option>
             </select>
+            <div id="error-category_active"></div>
           </div>
         </div>
 
@@ -84,21 +84,21 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('category/update') ?>" method="post" id="updateForm">
+      <form role="form" action="<?php echo base_url('category/form/update') ?>" method="post" id="updateForm">
 
         <div class="modal-body">
-          <div id="messages"></div>
-
           <div class="form-group">
             <label for="edit_brand_name">Category Name</label>
-            <input type="text" class="form-control" id="edit_category_name" name="edit_category_name" placeholder="Enter category name" autocomplete="off">
+            <input type="text" class="form-control" id="edit_category_name" name="category_name" placeholder="Enter category name" autocomplete="off">
+            <div id="error-category_name"></div>
           </div>
           <div class="form-group">
             <label for="edit_active">Status</label>
-            <select class="form-control" id="edit_active" name="edit_active">
+            <select class="form-control" id="edit_category_status" name="category_status">
+              <option value="0">Inactive</option>
               <option value="1">Active</option>
-              <option value="2">Inactive</option>
             </select>
+            <div id="error-category_status"></div>
           </div>
         </div>
 
@@ -125,7 +125,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('category/remove') ?>" method="post" id="removeForm">
+      <form role="form" action="<?php echo base_url('category/form/remove') ?>" method="post" id="removeForm">
         <div class="modal-body">
           <p>Do you really want to remove?</p>
         </div>
@@ -175,11 +175,6 @@ $(document).ready(function() {
         console.log(response);
 
         if(response.success === true) {
-          $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-            '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-          '</div>');
-
 
           // hide the modal
           $("#addModal").modal('hide');
@@ -190,24 +185,13 @@ $(document).ready(function() {
 
         } else {
 
-          if(response.messages instanceof Object) {
-            $.each(response.messages, function(index, value) {
-              var id = $("#"+index);
-
-              id.closest('.form-group')
-              .removeClass('has-error')
-              .removeClass('has-success')
-              .addClass(value.length > 0 ? 'has-error' : 'has-success');
-              
-              id.after(value);
-
-            });
-          } else {
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>');
+          // displays individual error messages
+          if (response.errors) {
+            for (var form_name in response.errors) {
+              $('#error-' + form_name).html(response.errors[form_name]);
+            }
           }
+          
         }
       }
     }); 
@@ -227,7 +211,7 @@ function editFunc(id)
     success:function(response) {
 
       $("#edit_category_name").val(response.name);
-      $("#edit_active").val(response.active);
+      $("#edit_category_status").val(response.active);
 
       // submit the edit from 
       $("#updateForm").unbind('submit').bind('submit', function() {
@@ -246,11 +230,6 @@ function editFunc(id)
             manageTable.ajax.reload(null, false); 
 
             if(response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
-
 
               // hide the modal
               $("#editModal").modal('hide');
@@ -259,23 +238,11 @@ function editFunc(id)
 
             } else {
 
-              if(response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var id = $("#"+index);
-
-                  id.closest('.form-group')
-                  .removeClass('has-error')
-                  .removeClass('has-success')
-                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                  
-                  id.after(value);
-
-                });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
+              // displays individual error messages
+              if (response.errors) {
+                for (var form_name in response.errors) {
+                  $('#error-' + form_name).html(response.errors[form_name]);
+                }
               }
             }
           }

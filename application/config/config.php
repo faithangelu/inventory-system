@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 // */
 $config['base_url'] = 'https://inventory.sys/';
-// $config['base_url'] = 'https://99a2b5c7.ngrok.io/';
+// $config['base_url'] = 'https://618a9c0c.ngrok.io';
 
 /*
 |--------------------------------------------------------------------------

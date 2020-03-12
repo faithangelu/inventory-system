@@ -7,7 +7,6 @@
         All <?php echo $page_title  ?>
       </div>
       <div class="col-md-4 float-right d-flex justify-content-end">
-        <button class="btn-sm btn btn-info mr-1" data-toggle="modal" data-target="#file_upload"> Upload a CSV file</button>
         <a href="<?php echo base_url('stores/start_inventory') ?>" class="btn-sm btn btn-primary " data-toggle="modal" data-target="#addModal"> Add <?php echo $page_title; ?></a> 
       </div>
     </div>

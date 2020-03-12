@@ -17,7 +17,8 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>ADP</th>
+            <th>Area Distributed Partner</th>
+            <th>Description</th>
             <th>Status</th>
             <th>Action</th>                        
           </tr>
@@ -62,29 +63,35 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add Area Ditributed Partner</h4>
+        <h4 class="modal-title">Add Area Distributed Partner</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/form/add') ?>" method="post" id="createForm">
+      <form role="form" action="<?php echo base_url('store_details/form/add') ?>" method="post" id="createForm">
 
         <div class="modal-body">
-          <input type="hidden" name="page" value="<?php echo $this->uri->segment(3) ?>">
+          <input type="hidden" name="page" value="<?php echo $this->uri->segment(2) ?>">
           <div class="form-group">
             <label for="active">Area of Responsibility</label>
-            <select class="form-control" id="store_area_distributed_partner_status" name="store_area_distributed_partner_status">
+            <select class="form-control js-example-basic-multiple" id="store_area_distributed_partner_aor" name="store_area_distributed_partner_aor[]" multiple>
               <?php if($area_of_responsibility) : ?>
                 <?php foreach($area_of_responsibility as $k => $v) : ?>
-                <option value="0"><?php echo $v['store_area_of_responsibility_name'] ?></option>
+                <option value="<?php echo $v['store_area_of_responsibility_id'] ?>"><?php echo $v['store_area_of_responsibility_name'] ?></option>
                 <?php endforeach; ?>
               <?php endif; ?>
+
             </select>
-            <div id="error-store_area_distributed_partner_name"></div>
+            <div id="error-store_area_distributed_partner_aor"></div>
           </div>
           <div class="form-group">
             <label for="brand_name">Area Distributed Partner Name</label>
-            <input type="text" class="form-control" id="store_area_distributed_partner_name" name="store_area_distributed_partner_name" placeholder="Enter Area Distributed Name" autocomplete="off">
+            <input type="text" class="form-control" id="store_area_distributed_partner_name" name="store_area_distributed_partner_name" placeholder="Name" autocomplete="off">
             <div id="error-store_area_distributed_partner_name"></div>
+          </div>
+          <div class="form-group">
+            <label for="brand_name">Area Distributed Partner Description</label>
+            <textarea name="store_area_distributed_partner_description" id="store_area_distributed_partner_description" class="form-control" placeholder="Description"></textarea>
+            <div id="error-store_area_distributed_partner_description"></div>
           </div>
           <div class="form-group">
             <label for="active">Status</label>
@@ -92,7 +99,7 @@
               <option value="0">Inactive</option>
               <option value="1" selected>Active</option>
             </select>
-            <div id="error-store_area_distributed_partner_name"></div>
+            <div id="error-store_area_distributed_partner_status"></div>
           </div>
         </div>
 
@@ -115,22 +122,26 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit Area Ditributed Partner </h4>
+        <h4 class="modal-title">Edit Area Distributed Partner </h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/form/update') ?>" method="post" id="updateForm">
+      <form role="form" action="<?php echo base_url('store_details/form/update') ?>" method="post" id="updateForm">
 
         <div class="modal-body">
           <div id="messages"></div>
 
           <div class="form-group">
-            <label for="edit_brand_name">ADP Name</label>
-            <input type="text" class="form-control" id="edit_adp_name" name="edit_adp_name" placeholder="Enter Area Distributed Partner Name" autocomplete="off">
+            <label for="edit_brand_name">Area Distributed Partner Name</label>
+            <input type="text" class="form-control" id="edit_store_area_distributed_partner_name" name="store_area_distributed_partner_name" placeholder="Name" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="edit_brand_name">Area Distributed Partner Description</label>
+            <input type="text" class="form-control" id="edit_store_area_distributed_partner_description" name="store_area_distributed_partner_description" placeholder="Description" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="edit_active">Status</label>
-            <select class="form-control" id="edit_active" name="edit_active">
+            <select class="form-control" id="edit_store_area_distributed_partner_status" name="edit_active">
               <option value="0">Inactive</option>
               <option value="1">Active</option>
             </select>
@@ -160,7 +171,7 @@
         <h4 class="modal-title">Remove Area Distributed Partner</h4>
       </div>
 
-      <form role="form" action="<?php echo base_url('stores/form/delete') ?>" method="post" id="removeForm">
+      <form role="form" action="<?php echo base_url('store_deails/form/delete') ?>" method="post" id="removeForm">
         <div class="modal-body">
           <p>Do you really want to remove?</p>
         </div>
@@ -184,9 +195,16 @@ var manageTable;
 
 $(document).ready(function() {
 
+  // $(".js-example-basic-ajax").select2({ dropdownParent: "#modal-container" });
+  $(".js-example-basic-multiple").select2({
+    allowClear: true,
+    width: '100%',
+    placeholder :'Select AOR'
+  });
+
     // initialize the datatable 
     manageTable = $('#manageTable').DataTable({
-        'ajax': app_url + 'stores/fetch_area_distributed_partners_per_store',
+        'ajax': app_url + 'store_details/fetch_area_distributed_partner',
         'order': []
     });
 
@@ -235,72 +253,73 @@ $(document).ready(function() {
 // edit function
 function editFunc(id)
 { 
-    $.ajax({
-        url: app_url + 'stores/fetchStoresDataById/'+id,
-        type: 'post',
-        dataType: 'json',
-        success:function(response) {
+  $.ajax({
+      url: app_url + 'store_details/fetch_area_distribution_partner_per_id/'+id,
+      type: 'post',
+      dataType: 'json',
+      success:function(response) {
 
-        $("#edit_ADP_name").val(response.name);
-        $("#edit_active").val(response.active);
+      $("#edit_store_area_distributed_partner_name").val(response.store_area_distributed_partner_name);
+      $("#edit_store_area_distributed_partner_description").val(response.store_area_distributed_partner_description);
+      $("#edit_store_area_distributed_partner_status").val(response.store_area_distributed_partner_status);
 
-        // submit the edit from 
-        $("#updateForm").unbind('submit').bind('submit', function() {
-            var form = $(this);
+      // submit the edit from 
+      $("#updateForm").unbind('submit').bind('submit', function() {
+          var form = $(this);
 
-            // remove the text-danger
-            $(".text-danger").remove();
+          // remove the text-danger
+          $(".text-danger").remove();
 
-            $.ajax({
-            url: form.attr('action') + '/' + id,
-            type: form.attr('method'),
-            data: form.serialize(), // /converting the form data into array and sending it to server
-            dataType: 'json',
-            success:function(response) {
+          $.ajax({
+          url: form.attr('action') + '/' + id,
+          type: form.attr('method'),
+          data: form.serialize(), // /converting the form data into array and sending it to server
+          dataType: 'json',
+          success:function(response) {
 
-                manageTable.ajax.reload(null, false); 
+              manageTable.ajax.reload(null, false); 
 
-                if(response.success === true) {
-                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                '</div>');
+              if(response.success === true) {
+              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                  '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+              '</div>');
 
 
-                // hide the modal
-                $("#editModal").modal('hide');
-                // reset the form 
-                $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
+              // hide the modal
+              $("#editModal").modal('hide');
+              // reset the form 
+              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
 
-                } else {
+              } else {
 
-                if(response.messages instanceof Object) {
-                    $.each(response.messages, function(index, value) {
-                    var id = $("#"+index);
+              if(response.messages instanceof Object) {
+                  $.each(response.messages, function(index, value) {
+                  var id = $("#"+index);
 
-                    id.closest('.form-group')
-                    .removeClass('has-error')
-                    .removeClass('has-success')
-                    .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                    
-                    id.after(value);
+                  id.closest('.form-group')
+                  .removeClass('has-error')
+                  .removeClass('has-success')
+                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
+                  
+                  id.after(value);
 
-                    });
-                } else {
-                    $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                    '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                    '</div>');
-                }
-                }
-            }
-            }); 
+                  });
+              } else {
+                  $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
+                  '</div>');
+              }
+              }
+          }
+          }); 
 
-            return false;
-        });
+          return false;
+      });
 
-        }
-    });
+      }
+  });
 }
 
 // remove functions 

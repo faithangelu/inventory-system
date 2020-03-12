@@ -151,6 +151,67 @@ class Products extends Admin_Controller
 
             $this->render_template('products/create', $this->data);
         }	
+    }
+    
+    public function form($action = 'add', $id = FALSE) {
+		
+		if ($this->input->post())
+		{
+			if ($this->_save($action, $id))
+			{
+				echo json_encode(array('success' => true, 'message' => 'Saved Successfully')); exit;
+			}
+			else
+			{	
+                $response['success'] = FALSE;
+                $response['message'] = 'Please complete the following fields';
+                $response['errors'] = array(					
+                    'product_name' => form_error('product_name'),
+                    'product_description' => form_error('product_description'),
+                    // 'product_status' => form_error('product_status'),
+                );
+                echo json_encode($response);
+                exit;
+            }
+		}
+
+
+	}
+
+	private function _save($action = 'add', $id = 0) {
+
+        $this->form_validation->set_rules('product_name', 'Product Name', 'trim|required');
+        $this->form_validation->set_rules('product_description', 'Product Name Description', 'trim|required');
+        // $this->form_validation->set_rules('product_status', 'Status', 'trim|required');
+
+        $this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+        if ($this->form_validation->run() == FALSE) {
+            return FALSE;
+        }
+
+        $data = array(
+            'product_name' => $this->input->post('product_name'),
+            'product_description' => $this->input->post('product_description'),
+            // 'product_status' => $this->input->post('product_status'),	
+            'product_deleted' => 0,	
+        );
+
+        if ($action == 'add')
+        {
+            $return = $this->model_products->create($data);
+        }
+        else if ($action == 'update')
+        {
+            $return = $this->model_products->update($id, $data);
+        } 
+        else if($action == 'delete') 
+        {
+            $return = $this->model_products->remove($id);
+        }
+
+        return $return;
+
 	}
 
     /*
@@ -183,154 +244,6 @@ class Products extends Admin_Controller
             $path = $config['upload_path'].'/'.$config['file_name'].'.'.$type;
             return ($data == true) ? $path : false;            
         }
-    }
-
-    /*
-    * If the validation is not valid, then it redirects to the edit product page 
-    * If the validation is successfully then it updates the data into the database 
-    * and it stores the operation message into the session flashdata and display on the manage product page
-    */
-	public function update($product_id)
-	{      
-        if(!in_array('updateProduct', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        if(!$product_id) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $this->form_validation->set_rules('product_name', 'Product name', 'trim|required');
-        $this->form_validation->set_rules('product_status', 'Product status', 'trim|required');
-
-        if ($this->form_validation->run() == TRUE) {
-            // true case
-            
-            $data = array(
-                'product_name' => $this->input->post('product_name'),                
-            );
-
-            
-            
-            // if($_FILES['product_image']['size'] > 0) {
-            //     $upload_image = $this->upload_image();
-            //     $upload_image = array('image' => $upload_image);
-                
-            //     $this->model_products->update($upload_image, $product_id);
-            // }
-
-            $update = $this->model_products->update($data, $product_id);
-            if($update == true) {
-                $this->session->set_flashdata('success', 'Successfully updated');
-                redirect('products/', 'refresh');
-            }
-            else {
-                $this->session->set_flashdata('errors', 'Error occurred!!');
-                redirect('products/update/'.$product_id, 'refresh');
-            }
-        }
-        else {
-            // attributes 
-            $attribute_data = $this->model_attributes->getActiveAttributeData();
-
-            $attributes_final_data = array();
-            foreach ($attribute_data as $k => $v) {
-                $attributes_final_data[$k]['attribute_data'] = $v;
-
-                $value = $this->model_attributes->getAttributeValueData($v['id']);
-
-                $attributes_final_data[$k]['attribute_value'] = $value;
-            }
-            
-            // false case
-            $this->data['attributes'] = $attributes_final_data;
-            $this->data['brands'] = $this->model_brands->getActiveBrands();         
-            $this->data['category'] = $this->model_category->getActiveCategroy();           
-            $this->data['stores'] = $this->model_stores->getActiveStore();          
-
-            $product_data = $this->model_products->getProductData($product_id);
-            $this->data['product_data'] = $product_data;
-            $this->render_template('products/edit', $this->data); 
-        }   
-	}
-
-    /*
-    * It removes the data from the database
-    * and it returns the response into the json format
-    */
-	public function remove()
-	{
-        if(!in_array('deleteProduct', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-        
-        $product_id = $this->input->post('product_id');
-
-        $response = array();
-        if($product_id) {
-            $delete = $this->model_products->remove($product_id);
-            if($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "Successfully removed"; 
-            }
-            else {
-                $response['success'] = false;
-                $response['messages'] = "Error in the database while removing the product information";
-            }
-        }
-        else {
-            $response['success'] = false;
-            $response['messages'] = "Refersh the page again!!";
-        }
-
-        echo json_encode($response);
-	}
-
-    public function file_import()
-    {
-        $file = $_FILES['file'];
-
-        print_r($file);
-
-        $fields = array(
-            'id', 'name', 'category_id', 'size'
-        );      
-
-        if ($content = file_get_contents($file['tmp_name']))
-        {           
-            $content = $file['tmp_name'];
-            $csv = array_map('str_getcsv', file($content));
-
-            if (count($csv) > 1)
-            {
-                unset($csv[0]);
-
-                $chunk = array_chunk($csv, 1000, true);
-                foreach ($chunk as $key => $batch)
-                {
-                    $batch_data = FALSE;
-                    
-                                                    
-                    foreach ($batch as $k => $record)
-                    {           
-                        foreach ($record as $i => $cleanrecord)
-                        {                       
-                            $batch_data[$k][$fields[$i]] = utf8_encode($cleanrecord);                   
-                        }
-                    }
-
-
-                    if (! ($status = $this->model_products->insert_batch($batch_data))) {
-                        echo json_encode(array('success' => false, 'message' => 'Error occured. Unable to import the data. Please try again.')); exit;
-
-                    } else {
-                        echo json_encode(array('success' => true, 'message' => 'Data has been successfully imported.')); exit;
-
-                    }   
-                }                                   
-            }
-            
-        }           
     }
 
 }
